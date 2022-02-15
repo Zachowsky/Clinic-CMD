@@ -1,0 +1,286 @@
+# depslib dependency file v1.0
+1558103770 source:c:\users\pawe≥\desktop\moje materia≥y\semestr 2\projekt pp2\przychodnia_projekt_rejestracja_id.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1558110878 source:c:\users\pawe≥\desktop\moje materia≥y\semestr 2\projekt pp2\projekt_przychodnia_pp2\przychodnia_projekt_rejestracja_id.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1558188741 source:c:\users\dominiú\desktop\przychod\przychodnia_projekt_rejestracja_id.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1558447527 source:a:\dominik\studia\2 semestr\w≥aúciwe\projekt pi ta\od pawla sort\przychod\przychodnia_projekt_rejestracja_id.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1558544300 source:a:\dominik\studia\2 semestr\w≥aúciwe\projekt pi ta\od pawla sort\projekt\przychodnia_projekt_rejestracja_id.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1558564355 source:a:\dominik\studia\2 semestr\w≥aúciwe\projekt pi ta\od pawla sort\ten z dzis co masz wyslac pawlowi\przychodnia_projekt_rejestracja_id.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1558566167 source:c:\users\pawe≥\downloads\ta\ten z dzis co masz wyslac pawlowi\przychodnia_projekt_rejestracja_id.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1558723476 source:c:\users\dominiú\desktop\to-to-juz-takie-ze-smiga-lepiej-niz-pan-pawel-na-bolidzie-ze-schodow\przychodnia_projekt_rejestracja_id.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1558980103 source:e:\to-to-juz-takie-ze-smiga-lepiej-niz-pan-pawel-na-bolidzie-ze-schodow\przychodnia_projekt_rejestracja_id.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1559053321 source:a:\dominik\studia\2 semestr\w≥aúciwe\projekt pi ta\ten jeden ostatni najlepszy w chuj\to-to-juz-takie-ze-smiga-lepiej-niz-pan-pawel-na-bolidzie-ze-schodow\przychodnia_projekt_rejestracja_id.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1559085013 source:c:\users\pawe≥\desktop\moje materia≥y\semestr 2\projekt pp2\przychodnia_pp2\przychodnia_projekt_rejestracja_id.c
+	"pacjenci.h"
+	"lekarze.h"
+	"wizyty.h"
+
+1559084973 source:c:\users\pawe≥\desktop\moje materia≥y\semestr 2\projekt pp2\przychodnia_pp2\pacjenci.c
+	"pacjenci.h"
+
+1559085017 c:\users\pawe≥\desktop\moje materia≥y\semestr 2\projekt pp2\przychodnia_pp2\pacjenci.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1559084776 c:\users\pawe≥\desktop\moje materia≥y\semestr 2\projekt pp2\przychodnia_pp2\lekarze.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1559084980 source:c:\users\pawe≥\desktop\moje materia≥y\semestr 2\projekt pp2\przychodnia_pp2\lekarze.c
+	"lekarze.h"
+	"pacjenci.h"
+
+1559084749 c:\users\pawe≥\desktop\moje materia≥y\semestr 2\projekt pp2\przychodnia_pp2\wizyty.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1559084811 source:c:\users\pawe≥\desktop\moje materia≥y\semestr 2\projekt pp2\przychodnia_pp2\wizyty.c
+	"pacjenci.h"
+	"lekarze.h"
+	"wizyty.h"
+
+1559085371 source:d:\users\piotr\desktop\przychodnia_pp2 wiele plikÛw\wizyty.c
+	"pacjenci.h"
+	"lekarze.h"
+	"wizyty.h"
+
+1559085413 d:\users\piotr\desktop\przychodnia_pp2 wiele plikÛw\pacjenci.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1559085409 d:\users\piotr\desktop\przychodnia_pp2 wiele plikÛw\lekarze.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1559121459 d:\users\piotr\desktop\przychodnia_pp2 wiele plikÛw\wizyty.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1559121373 source:d:\users\piotr\desktop\przychodnia_pp2\lekarze.c
+	"lekarze.h"
+	"pacjenci.h"
+
+1559122696 d:\users\piotr\desktop\przychodnia_pp2\lekarze.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1559122219 d:\users\piotr\desktop\przychodnia_pp2\pacjenci.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1559122087 source:d:\users\piotr\desktop\przychodnia_pp2\pacjenci.c
+	"pacjenci.h"
+
+1559122614 source:d:\users\piotr\desktop\przychodnia_pp2\wizyty.c
+	"pacjenci.h"
+	"lekarze.h"
+	"wizyty.h"
+
+1559121459 d:\users\piotr\desktop\przychodnia_pp2\wizyty.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1559242842 source:d:\users\piotr\desktop\przychodnia pp2 projekt\lekarze.c
+	"lekarze.h"
+	"pacjenci.h"
+
+1559236778 d:\users\piotr\desktop\przychodnia pp2 projekt\lekarze.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1559236514 d:\users\piotr\desktop\przychodnia pp2 projekt\pacjenci.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1559244554 source:d:\users\piotr\desktop\przychodnia pp2 projekt\pacjenci.c
+	"pacjenci.h"
+
+1559242990 source:d:\users\piotr\desktop\przychodnia pp2 projekt\przychodnia_projekt_rejestracja_id.c
+	"pacjenci.h"
+	"lekarze.h"
+	"wizyty.h"
+
+1559237025 d:\users\piotr\desktop\przychodnia pp2 projekt\wizyty.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1559246750 source:d:\users\piotr\desktop\przychodnia pp2 projekt\wizyty.c
+	"pacjenci.h"
+	"lekarze.h"
+	"wizyty.h"
+
+1559239242 source:c:\users\pawe≥\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\lekarze.c
+	"lekarze.h"
+	"pacjenci.h"
+
+1559233178 c:\users\pawe≥\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\lekarze.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1559232914 c:\users\pawe≥\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\pacjenci.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1559240954 source:c:\users\pawe≥\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\pacjenci.c
+	"pacjenci.h"
+
+1559239390 source:c:\users\pawe≥\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\przychodnia_projekt_rejestracja_id.c
+	"pacjenci.h"
+	"lekarze.h"
+	"wizyty.h"
+
+1559233425 c:\users\pawe≥\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\wizyty.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1559243150 source:c:\users\pawe≥\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\wizyty.c
+	"pacjenci.h"
+	"lekarze.h"
+	"wizyty.h"
+
+1559239242 source:c:\users\pawel\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\lekarze.c
+	"lekarze.h"
+	"pacjenci.h"
+
+1559233178 c:\users\pawel\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\lekarze.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1559232914 c:\users\pawel\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\pacjenci.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+
+1559240954 source:c:\users\pawel\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\pacjenci.c
+	"pacjenci.h"
+
+1559239390 source:c:\users\pawel\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\przychodnia_projekt_rejestracja_id.c
+	"pacjenci.h"
+	"lekarze.h"
+	"wizyty.h"
+
+1559233425 c:\users\pawel\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\wizyty.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<windows.h>
+	<unistd.h>
+
+1559243150 source:c:\users\pawel\desktop\moje materialy\semestr 2\projekt pp2\pp2.pro.1id16.£ataå.wojtasi—ski.zacharz\przychodnia pp2 projekt\wizyty.c
+	"pacjenci.h"
+	"lekarze.h"
+	"wizyty.h"
+

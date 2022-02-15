@@ -1,0 +1,3946 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <windows.h>
+#include <unistd.h>
+#define sleep(x) Sleep(20 * (x))
+#define SIZE 50
+
+
+/*
+******************************************************                          PACJENCI                         ************************************************************************
+*/
+
+struct pacjenci{
+
+    int id;
+    char imie[SIZE];
+    char nazwisko[SIZE];
+    char pesel[SIZE];
+    char data_ur[SIZE];
+    char adres[SIZE];
+    char nr_dom[SIZE];
+    char email[SIZE];
+    char telefon[SIZE];
+    char waga[SIZE];
+    char wzrost[SIZE];
+    char oddzial[SIZE];
+
+    struct pacjenci *poprzedni, *nastepny;
+
+}baza;
+
+struct pacjenci *dodaj_wpis;
+struct pacjenci *poczatek = NULL;
+struct pacjenci *koniec = NULL;
+
+int nowy_pacjent(int id){
+
+    struct pacjenci *dodaj_wpis = (struct pacjenci *)malloc(sizeof(baza));
+
+    if(!dodaj_wpis){
+        printf("Blad przydzielenia pamieci !!");
+        perror("malloc");
+        return EXIT_FAILURE;
+    }
+
+    if (dodaj_wpis!=NULL){
+
+        system("cls");
+
+        (dodaj_wpis->id)=id;
+
+        printf("Podaj imie: \n");
+        scanf("%s",dodaj_wpis->imie);
+
+        printf("Podaj nazwisko: \n");
+        scanf("%s",dodaj_wpis->nazwisko);
+
+        printf("Podaj pesel: \n");
+        scanf("%s", dodaj_wpis->pesel);
+
+        while((strlen((dodaj_wpis->pesel))!=11)){
+            printf("Podany pesel jest nieprawidlowy!!\n");
+            scanf("%s",dodaj_wpis->pesel);
+        }
+
+        printf("Podaj date urodzenia(DD/MM/RRRR): \n");
+        scanf("%s",dodaj_wpis->data_ur);
+
+        printf("Podaj miejsce zamieszkania: \n");
+        scanf("%s", dodaj_wpis->adres);
+
+        printf("Podaj nr domu/mieszkania: \n");
+        scanf("%s", dodaj_wpis->nr_dom);
+
+        printf("Podaj email: \n");
+        scanf("%s", dodaj_wpis->email);
+
+        printf("Podaj nr telefonu: \n");
+        scanf("%s", dodaj_wpis->telefon);
+
+        while((strlen(dodaj_wpis->telefon)!=9)){
+                printf("Podany nr telefonu jest nieprawidlowy!!\n");
+                scanf("%s",dodaj_wpis->telefon);
+        }
+
+        printf("Podaj wage(w kg.): \n");
+        scanf("%s", dodaj_wpis->waga);
+
+        printf("Podaj wzrost(w cm.): \n");
+        scanf("%s", dodaj_wpis->wzrost);
+
+        printf("Podaj oddzial NFZ: \n");
+        scanf("%s", dodaj_wpis->oddzial);
+    }
+
+        dodaj_wpis -> nastepny = NULL;
+
+        if(koniec == NULL){
+                poczatek = koniec = dodaj_wpis;
+          }
+
+          else{
+                koniec->nastepny = dodaj_wpis;
+                koniec = dodaj_wpis;
+            }
+            int n;
+            printf("\n\nCzy chcesz dodac kolejnego pacjenta?\n[1]Tak.\n[2]Nie.");
+            scanf("%d", &n);
+            if(n==1){
+                id++;
+                nowy_pacjent(id);
+            }
+            else if(n==2){
+                return 0;
+            }
+            else while( n == 0 || n > 2){
+                printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+                scanf("%d", &n);
+            }
+return 0;
+
+}
+
+void pokaz_pacjentow(struct pacjenci *tmp){
+
+    system("cls");
+
+
+        if(poczatek != NULL){
+                tmp = poczatek;
+        }
+
+            else{
+                tmp = NULL;
+            }
+
+                if(tmp == NULL){
+                    printf("\nBaza pacjentow jest pusta!!.\n\n");
+                }
+
+                    else  while(tmp != NULL){
+
+                        printf("\n*****************************************************************************************************************************");
+                        printf("\nNumer ID: \t\t%d",tmp->id);
+                        printf("\nImie i nazwisko: \t%s %s \n",tmp->imie, tmp->nazwisko);
+                        printf("PESEL: \t\t\t%s\n",tmp->pesel);
+                        printf("Data urodzenia: \t%s\n",tmp->data_ur);
+                        printf("Adres zamieszkania: \t%s %s\n",tmp->adres,tmp->nr_dom);
+                        printf("E-Mail: \t\t%s\n",tmp->email);
+                        printf("Nr telefonu: \t\t+48 %s\n",tmp->telefon);
+                        printf("Waga: \t\t\t%s KG \n",tmp->waga);
+                        printf("Wzrost: \t\t%s CM \n",tmp->wzrost);
+                        printf("Oddzial NFZ: \t\t%s\n",tmp->oddzial);
+
+
+                    tmp = tmp -> nastepny;
+
+                }
+}
+
+void wczytaj_pacjentow(char* nazwa_pliku) {
+
+    FILE* wp;
+    wp = fopen(nazwa_pliku, "r");
+
+
+    if (wp != NULL){
+
+
+        if((feof(wp)==0) && (fgetc(wp)<2)){
+
+
+            fclose(wp);
+            remove(nazwa_pliku);
+          }
+
+         else{
+
+            while(feof(wp) == 0){
+
+          dodaj_wpis = malloc(sizeof (baza));
+
+          fscanf(wp, "%d", &dodaj_wpis->id);
+          fscanf(wp, "%s", dodaj_wpis->imie);
+          fscanf(wp, "%s", dodaj_wpis->nazwisko);
+          fscanf(wp, "%s", dodaj_wpis->pesel);
+          fscanf(wp, "%s", dodaj_wpis->data_ur);
+          fscanf(wp, "%s", dodaj_wpis->adres);
+          fscanf(wp, "%s", dodaj_wpis->nr_dom);
+          fscanf(wp, "%s", dodaj_wpis->email);
+          fscanf(wp, "%s", dodaj_wpis->telefon);
+          fscanf(wp, "%s", dodaj_wpis->waga);
+          fscanf(wp, "%s", dodaj_wpis->wzrost);
+          fscanf(wp, "%s", dodaj_wpis->oddzial);
+
+          dodaj_wpis -> nastepny = NULL;
+
+          if (koniec != NULL){
+
+                koniec->nastepny = dodaj_wpis;
+                koniec = dodaj_wpis;
+
+          }
+
+          else{
+                koniec = poczatek = dodaj_wpis;
+            }
+        }
+         }
+        fclose(wp);
+    }
+
+}
+
+void zapisz_do_pliku_pacjentow(char* nazwa_pliku){
+
+    FILE* wp;
+    wp = fopen(nazwa_pliku, "w");
+
+   dodaj_wpis = poczatek;
+
+        while(dodaj_wpis != NULL) {
+
+            fprintf(wp, "\n\n");
+            fprintf(wp, "%d\n", dodaj_wpis->id);
+            fprintf(wp, "%s\n", dodaj_wpis->imie);
+            fprintf(wp, "%s\n", dodaj_wpis->nazwisko);
+            fprintf(wp, "%s\n", dodaj_wpis->pesel);
+            fprintf(wp, "%s\n", dodaj_wpis->data_ur);
+            fprintf(wp, "%s\n", dodaj_wpis->adres);
+            fprintf(wp, "%s\n", dodaj_wpis->nr_dom);
+            fprintf(wp, "%s\n", dodaj_wpis->email);
+            fprintf(wp, "%s\n", dodaj_wpis->telefon);
+            fprintf(wp, "%s\n", dodaj_wpis->waga);
+            fprintf(wp, "%s\n", dodaj_wpis->wzrost);
+            fprintf(wp, "%s", dodaj_wpis->oddzial);
+            dodaj_wpis = dodaj_wpis -> nastepny;
+        }
+
+    fclose(wp);
+}
+
+
+struct pacjenci *usuwanie_pacjentow(struct pacjenci *lista3){
+
+    int a;
+    struct pacjenci *poprzedni = NULL;
+    struct pacjenci *tmp = lista3;
+    tmp = poczatek;
+    int b = 0;
+
+        if(tmp == NULL){
+            system("cls");
+            printf("Baza pacjentow jest pusta !!\n\n");
+            return 0;
+        }
+
+        printf("Podaj numer ID pacjenta, ktorego chcesz usunac: \n");
+        scanf("%d", &a);
+
+        while(koniec->id < a){
+                printf("Podano zly numer!!");
+                printf("Podaj numer ID pacjenta, ktorego chcesz usunac: \n");
+                scanf("%d", &a);
+            }
+
+
+        tmp = poczatek;
+        while(tmp!=NULL){
+            if(tmp->id == a){
+                b++;
+            }
+            tmp = tmp->nastepny;
+        }
+        if(b<1){
+            printf("Podano zly numer!!");
+            usuwanie_pacjentow(lista3);
+        }
+
+        tmp = poczatek;
+         while(tmp->id != NULL){
+                    if(tmp->id == a){
+                            system("cls");
+                            printf("\n*****************************************************************************************************************************");
+                            printf("\nNumer ID pacjenta: \t\t%d",tmp->id);
+                            printf("\nImie i nazwisko pacjenta: \t%s %s", tmp->imie,tmp->nazwisko);
+                            break;
+                    }
+                    else{
+                        tmp = tmp->nastepny;
+                    }
+                }
+
+            printf("\n\nCzy tego pacjenta chcesz usunac?\n[1]Tak.\n[2]Nie.\n");
+            int u;
+            scanf("%d", &u);
+            if(u==1){
+
+            }
+            else if(u==2){
+                usuwanie_pacjentow(lista3);
+            }
+            else if(u==0 || u>2){
+                printf("Wybierz wlasciwy numerek !!");
+                usuwanie_pacjentow(lista3);
+            }
+
+            int i = 0;
+            tmp = poczatek;
+            while(tmp != NULL){
+
+                    if(tmp->id == a){
+                        tmp = tmp->nastepny;
+                        i++;
+
+                    }
+
+                    else {
+                        tmp = tmp->nastepny;
+                    }
+                }
+            if(i<1){
+                system("cls");
+                printf("Nie ma pacjenta o podanym ID!!\n\n");
+                usuwanie_pacjentow(lista3);
+            }
+            tmp = poczatek;
+
+
+            while(tmp){
+                if(tmp->id==a){
+                        if(poprzedni==NULL){
+                            struct pacjenci *poczatek = tmp->nastepny;
+                            free(tmp);
+                            return poczatek;
+                        }
+                        else{
+                            poprzedni->nastepny=tmp->nastepny;
+                            free(tmp);
+                            return lista3;
+                        }
+                }
+                else{
+                    poprzedni=tmp;
+                    tmp=tmp->nastepny;
+                }
+
+    }
+
+    if(poczatek->id == a){
+                poczatek = poczatek->nastepny;
+
+            }
+
+return lista3;
+}
+
+
+int edycja_pacjentow(){
+
+    if(poczatek == NULL){
+            system("cls");
+            printf("Baza pacjentow jest pusta !!\n\n");
+            return 0;
+        }
+
+    dodaj_wpis = poczatek;
+    int a,b;
+
+            printf("Podaj numer ID pacjenta, ktorego dane chcesz edytowac: ");
+            scanf("%d", &a);
+
+            while(koniec->id < a){
+                printf("Nie znaleziono pacjenta o podanym ID!!\n\n");
+                edycja_pacjentow();
+            }
+
+            int i = 0;
+            dodaj_wpis = poczatek;
+            while(dodaj_wpis != NULL){
+
+                    if(dodaj_wpis->id == a){
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                        i++;
+
+                    }
+
+                    else {
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                    }
+                }
+            if(i<1){
+                printf("Nie ma pacjenta o podanym ID!!\n\n");
+                edycja_pacjentow();
+            }
+
+
+            system("cls");
+
+            dodaj_wpis = poczatek;
+
+            system("cls");
+
+            while(dodaj_wpis != NULL){
+                    if(dodaj_wpis->id == a){
+                        printf("\n*****************************************************************************************************************************");
+                        printf("\nNumer ID: \t\t%d",dodaj_wpis->id);
+                        printf("\nImie i nazwisko: \t%s %s \n",dodaj_wpis->imie, dodaj_wpis->nazwisko);
+                        printf("PESEL: \t\t\t%s\n",dodaj_wpis->pesel);
+                        printf("Data urodzenia: \t%s\n",dodaj_wpis->data_ur);
+                        printf("Adres zamieszkania: \t%s %s\n",dodaj_wpis->adres,dodaj_wpis->nr_dom);
+                        printf("E-Mail: \t\t%s\n",dodaj_wpis->email);
+                        printf("Nr telefonu: \t\t+48 %s\n",dodaj_wpis->telefon);
+                        printf("Waga: \t\t\t%s KG \n",dodaj_wpis->waga);
+                        printf("Wzrost: \t\t%s CM \n",dodaj_wpis->wzrost);
+                        printf("Oddzial NFZ: \t\t%s\n\n",dodaj_wpis->oddzial);
+                        break;
+                    }
+                    else{
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                    }
+            }
+
+            dodaj_wpis = poczatek;
+
+            printf("Wybierz pole do edycji:\n [1]Imie.\n [2]Nazwisko.\n [3]Pesel.\n [4]Data urodzenia.\n [5]Adres.\n [6]Numer domu.\n [7]Email.\n [8]Telefon.\n [9]Waga.\n [10]Wzrost.\n [11]Oddzial.\n\n [12]MENU.\n");
+            scanf("%d", &b);
+            while(b > 12 || b == 0){
+            printf("Zly numer! Wybierz raz jeszcze!");
+            scanf("%d",&b);
+        }
+
+        if(poczatek == NULL){
+                printf("Err");
+                return 0;
+        }
+
+            if((poczatek != NULL) && (((poczatek->id) == a)) && ((dodaj_wpis != NULL))){
+
+
+                if(b==1){
+                printf("\nPodaj imie: \n");
+                scanf("%s",dodaj_wpis->imie);
+                }
+
+                if(b==2){
+                printf("Podaj nazwisko: \n");
+                scanf("%s",dodaj_wpis->nazwisko);
+                }
+
+                if(b==3){
+                printf("Podaj pesel: \n");
+                scanf("%s", dodaj_wpis->pesel);
+                }
+
+                while((strlen(dodaj_wpis->pesel)!=11)){
+                    printf("Podany pesel jest nieprawid³owy!!\n");
+                    scanf("%s",dodaj_wpis->pesel);
+                }
+
+                if(b==4){
+                printf("Podaj date urodzenia(DD/MM/RRRR): \n");
+                scanf("%s",dodaj_wpis->data_ur);
+                }
+
+                if(b==5){
+                printf("Podaj miejsce zamieszkania: \n");
+                scanf("%s", dodaj_wpis->adres);
+                }
+
+                if(b==6){
+                printf("Podaj nr domu/mieszkania: \n");
+                scanf("%s", dodaj_wpis->nr_dom);
+                }
+
+                if(b==7){
+                printf("Podaj email: \n");
+                scanf("%s", dodaj_wpis->email);
+                }
+
+                if(b==8){
+                printf("Podaj nr telefonu: \n");
+                scanf("%s", dodaj_wpis->telefon);
+                }
+
+
+                while((strlen(dodaj_wpis->telefon)!=9)){
+                    printf("Podany nr telefonu jest nieprawidlowy!!\n");
+                    scanf("%s",dodaj_wpis->telefon);
+                }
+
+                if(b==9){
+                printf("Podaj wage(w kg.): \n");
+                scanf("%s", dodaj_wpis->waga);
+                }
+
+                if(b==10){
+                printf("Podaj wzrost(w cm.): \n");
+                scanf("%s", dodaj_wpis->wzrost);
+                }
+
+                if(b==11){
+                printf("Podaj oddzial NFZ: \n");
+                scanf("%s", dodaj_wpis->oddzial);
+                }
+
+                if(b==12){
+
+                }
+
+                }
+
+            else while((dodaj_wpis!=NULL) && ((dodaj_wpis->id!=a))){
+
+                dodaj_wpis = dodaj_wpis->nastepny;
+
+                if(dodaj_wpis->id ==a){
+
+                system("cls");
+
+
+                if(b==1){
+                printf("\nPodaj imie: \n");
+                scanf("%s",dodaj_wpis->imie);
+                }
+
+                if(b==2){
+                printf("Podaj nazwisko: \n");
+                scanf("%s",dodaj_wpis->nazwisko);
+                }
+
+                if(b==3){
+                printf("Podaj pesel: \n");
+                scanf("%s", dodaj_wpis->pesel);
+
+                while((strlen(dodaj_wpis->pesel)!=11)){
+                    printf("Podany pesel jest nieprawidlowy!!\n");
+                    scanf("%s",dodaj_wpis->pesel);
+                    }
+                }
+
+                if(b==4){
+                printf("Podaj date urodzenia(DD/MM/RRRR): \n");
+                scanf("%s",dodaj_wpis->data_ur);
+                }
+
+                if(b==5){
+                printf("Podaj miejscowosc zamieszkania: \n");
+                scanf("%s", dodaj_wpis->adres);
+                }
+
+                if(b==6){
+                printf("Podaj nr domu/mieszkania: \n");
+                scanf("%s", dodaj_wpis->nr_dom);
+                }
+
+                if(b==7){
+                printf("Podaj email: \n");
+                scanf("%s", dodaj_wpis->email);
+                }
+
+                if(b==8){
+                printf("Podaj nr telefonu: \n");
+                scanf("%s", dodaj_wpis->telefon);
+
+                while((strlen(dodaj_wpis->telefon)!=9)){
+                    printf("Podany nr telefonu jest nieprawidlowy!!\n");
+                    scanf("%s",dodaj_wpis->telefon);
+                    }
+                }
+
+                if(b==9){
+                printf("Podaj wage(w kg.): \n");
+                scanf("%s", dodaj_wpis->waga);
+                }
+
+                if(b==10){
+                printf("Podaj wzrost(w cm.): \n");
+                scanf("%s", dodaj_wpis->wzrost);
+                }
+
+                if(b==11){
+                printf("Podaj oddzial NFZ: \n");
+                scanf("%s", dodaj_wpis->oddzial);
+                }
+
+                if(b==12){
+                    break;
+                }
+
+
+                }
+        }
+        int g;
+        printf("Czy nadal chcesz edytowac? \n[1]Tak.\n[2]Nie.\n");
+        scanf("%d", &g);
+        if(g==1){
+            edycja_pacjentow();
+        }
+        else if(g==2){
+            return 0;
+        }
+        else while( g == 0 || g > 2){
+            printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+            scanf("%d", &g);
+        }
+return 0;
+}
+
+
+int menu_wyszukiwania_pacjentow(){
+
+    if(poczatek == NULL){
+            printf("Baza pacjentow jest pusta !!\n\n");
+            return 0;
+        }
+    int id_dzialania;
+    void wyswietl_dane_pacjentow();
+
+    int id_pacjenta;
+    char imie_pacjenta[SIZE];
+    char nazwisko_pacjenta[SIZE];
+    char pesel_pacjenta[SIZE];
+    char oddzial_pacjenta[SIZE];
+
+    int i = 0;
+
+    dodaj_wpis = poczatek;
+
+        printf("Po ktorym polu chcesz wyszukac?\n");
+        printf("1.ID\n2.Imie\n3.Nazwisko\n4.PESEL\n5.Oddzial NFZ.\n");
+        scanf("%d",&id_dzialania);
+        while(id_dzialania > 5 || id_dzialania == 0){
+            printf("Zly numer! Wybierz raz jeszcze!");
+            scanf("%d",&id_dzialania);
+        }
+
+        if(id_dzialania == 1){
+            printf("Podaj ID szukanego pacjenta:");
+            scanf("%d", &id_pacjenta);
+
+            while(dodaj_wpis != NULL){
+
+                    if(dodaj_wpis->id == id_pacjenta){
+                        wyswietl_dane_pacjentow(dodaj_wpis);
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                        i++;
+                    }
+
+                    else {
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                    }
+
+                }
+            }
+
+
+        if(id_dzialania == 2){
+            printf("Podaj imie szukanego pacjenta:");
+            scanf("%s", imie_pacjenta);
+
+            while(dodaj_wpis != NULL){
+
+                    if(stricmp(dodaj_wpis->imie, imie_pacjenta)==0){
+                        wyswietl_dane_pacjentow(dodaj_wpis);
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                        i++;
+
+                    }
+
+                    else{
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                    }
+                }
+            }
+
+
+        if(id_dzialania == 3){
+            printf("Podaj nazwisko szukanego pacjenta:");
+            scanf("%s", nazwisko_pacjenta);
+
+            while(dodaj_wpis != NULL){
+
+                    if(stricmp(dodaj_wpis->nazwisko, nazwisko_pacjenta)==0){
+                        wyswietl_dane_pacjentow(dodaj_wpis);
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                        i++;
+
+                    }
+
+                    else{
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                    }
+                }
+            }
+
+
+        if(id_dzialania == 4){
+            printf("Podaj pesel szukanego pacjenta:");
+            scanf("%s", pesel_pacjenta);
+
+            while(dodaj_wpis != NULL){
+
+                    if(stricmp(dodaj_wpis->pesel, pesel_pacjenta)==0){
+                        wyswietl_dane_pacjentow(dodaj_wpis);
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                        i++;
+
+                    }
+
+                    else{
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                    }
+                }
+            }
+
+
+        if(id_dzialania == 5){
+            printf("Podaj oddzial szukanego pacjenta:");
+            scanf("%s", oddzial_pacjenta);
+
+            while(dodaj_wpis != NULL){
+
+                    if(stricmp(dodaj_wpis->oddzial, oddzial_pacjenta)==0){
+                        wyswietl_dane_pacjentow(dodaj_wpis);
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                        i++;
+
+                    }
+                    else{
+                        dodaj_wpis = dodaj_wpis->nastepny;
+                    }
+                }
+            }
+
+        if(id_dzialania > 5){
+            printf("Wybierz wlasciwa liczbe !");
+        }
+
+        if(i<1){
+            printf("Nie znaleziono uzytkownika o podanych danych.\n");
+        }
+
+        printf("\nChcesz wyszukac ponownie?\n[1]Tak.\n[2]Nie.\n.\n");
+                        int q;
+                        scanf("%d", &q);
+                        if(q==1){
+                            system("cls");
+                            menu_wyszukiwania_pacjentow();
+                        }
+                        else if(q==2){
+                            return 0;
+                        }
+                        else while( q == 0 || q > 2){
+                            printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+                            scanf("%d", &q);
+                        }
+return 0;
+}
+
+void wyswietl_dane_pacjentow(struct pacjenci *dodaj_wpis){
+
+            printf("\n*****************************************************************************************************************************");
+            printf("\nNumer ID: \t\t%d",dodaj_wpis->id);
+            printf("\nImie i nazwisko: \t%s %s \n",dodaj_wpis->imie, dodaj_wpis->nazwisko);
+            printf("PESEL: \t\t\t%s\n",dodaj_wpis->pesel);
+            printf("Data urodzenia: \t%s\n",dodaj_wpis->data_ur);
+            printf("Adres zamieszkania: \t%s %s\n",dodaj_wpis->adres,dodaj_wpis->nr_dom);
+            printf("E-Mail: \t\t%s\n",dodaj_wpis->email);
+            printf("Nr telefonu: \t\t+48 %s\n",dodaj_wpis->telefon);
+            printf("Waga: \t\t\t%s KG \n",dodaj_wpis->waga);
+            printf("Wzrost: \t\t%s CM \n",dodaj_wpis->wzrost);
+            printf("Oddzial NFZ: \t\t%s\n",dodaj_wpis->oddzial);
+}
+
+
+
+/*
+******************************************************               LEKARZE            ************************************************************************
+*/
+
+
+
+struct lekarze{
+
+    int id;
+    char imie[SIZE];
+    char nazwisko[SIZE];
+    char pesel[SIZE];
+    char numer_pwz[SIZE];
+    char tytul_zawodowy[SIZE];
+    char specjalizacja[SIZE];
+    char email[SIZE];
+    char telefon[SIZE];
+    char dni_pracy[SIZE];
+    int godzina_pocz;
+    int godzina_kon;
+
+    struct lekarze *poprzedni1, *nastepny1;
+} baza1;
+
+struct lekarze *dodaj_wpis1;
+struct lekarze *poczatek1 = NULL;
+struct lekarze *koniec1 = NULL;
+
+int nowy_lekarz(int id1){
+
+    dodaj_wpis1 = malloc(sizeof (baza1));
+
+    if(!dodaj_wpis1){
+        printf("Nie dziala.");
+        perror("malloc");
+        return EXIT_FAILURE;
+    }
+
+    if (dodaj_wpis1!=NULL){
+
+        system("cls");
+
+        dodaj_wpis1-> id=id1;
+
+        printf("\nPodaj imie: \n");
+        scanf("%s",dodaj_wpis1->imie);
+
+        printf("Podaj nazwisko: \n");
+        scanf("%s",dodaj_wpis1->nazwisko);
+
+        printf("Podaj pesel: \n");
+        scanf("%s", dodaj_wpis1->pesel);
+
+        while((strlen(dodaj_wpis1->pesel)!=11)){
+            printf("Podany pesel jest nieprawid³owy!!\n");
+            scanf("%s",dodaj_wpis1->pesel);
+        }
+
+
+        printf("Podaj nr PWZ: \n");
+        scanf("%s",dodaj_wpis1->numer_pwz);
+
+        printf("Podaj tytul zawodowy: \n");
+        scanf("%s", dodaj_wpis1->tytul_zawodowy);
+
+        printf("Podaj specjalizacje: \n");
+        scanf("%s", dodaj_wpis1->specjalizacja);
+
+        printf("Podaj e-mail: \n");
+        scanf("%s", dodaj_wpis1->email);
+
+        printf("Podaj nr telefonu: \n");
+        scanf("%s", dodaj_wpis1->telefon);
+
+        while((strlen(dodaj_wpis1->telefon)!=9)){
+                printf("Podany nr telefonu jest nieprawidlowy!!\n");
+                scanf("%s",dodaj_wpis1->telefon);
+            }
+
+
+        int y = 1;
+
+        strcpy(dodaj_wpis1->dni_pracy, "0000000");
+
+        while(y==1){
+
+            printf("Wybierz dni pracy lekarza: \n[0]Poniedzialek.\n[1]Wtorek.\n[2]Sroda.\n[3]Czwartek.\n[4]Piatek.\n[5]Sobota.\n[6]Niedziela.");
+            int wybierz_dzien;
+            scanf("%d", &wybierz_dzien);
+
+
+                if(wybierz_dzien == 0){
+                    if( dodaj_wpis1->dni_pracy[0] == '0'){
+                        dodaj_wpis1->dni_pracy[0] = '1';
+                    }
+                }
+
+                if(wybierz_dzien == 1){
+                    if( dodaj_wpis1->dni_pracy[1] == '0'){
+                        dodaj_wpis1->dni_pracy[1] = '1';
+                    }
+                }
+
+                if(wybierz_dzien == 2){
+                    if( dodaj_wpis1->dni_pracy[2] == '0'){
+                        dodaj_wpis1->dni_pracy[2] = '1';
+                    }
+                }
+
+                if(wybierz_dzien == 3){
+                    if( dodaj_wpis1->dni_pracy[3] == '0'){
+                        dodaj_wpis1->dni_pracy[3] = '1';
+                    }
+                }
+
+                if(wybierz_dzien == 4){
+                    if( dodaj_wpis1->dni_pracy[4] == '0'){
+                        dodaj_wpis1->dni_pracy[4] = '1';
+                    }
+                }
+
+                if(wybierz_dzien == 5){
+                    if( dodaj_wpis1->dni_pracy[5] == '0'){
+                        dodaj_wpis1->dni_pracy[5] = '1';
+                    }
+                }
+
+                if(wybierz_dzien == 6){
+                    if( dodaj_wpis1->dni_pracy[6] == '0'){
+                        dodaj_wpis1->dni_pracy[6] = '1';
+                    }
+                }
+
+
+            printf("Czy chcesz dodac kolejny dzien?\n[1]Tak.\n[2]Nie.");
+            int y;
+            scanf("%d", &y);
+            if(y==1){
+                printf("Wybierz dzien ktory chcesz dodac: ");
+
+            }
+            else if(y==2){
+                break;
+            }
+            else while(y != 1 && y != 2){
+                printf("Podaj prawidlowy numerek !!");
+                scanf("%d", &y);
+            }
+            printf("\n\n\n%s\n\n\n", dodaj_wpis1->dni_pracy);
+        }
+
+
+
+        printf("Podaj godzine rozpoczecia pracy: \n");
+        scanf("%d", &dodaj_wpis1->godzina_pocz);
+        while(dodaj_wpis1->godzina_pocz < 6){
+            printf("Godzina rozpoczecia pracy nie moze byc mniejsza niz 06:00 !\n");
+            scanf("%d", &dodaj_wpis1->godzina_pocz);
+        }
+
+
+        printf("Podaj godzine zakonczenia pracy: \n");
+        scanf("%d", &dodaj_wpis1->godzina_kon);
+        while(dodaj_wpis1->godzina_kon > 22){
+            printf("Godzina zakonczenia pracy nie moze byc wieksza niz 22:00 !\n");
+            scanf("%d", &dodaj_wpis1->godzina_kon);
+        }
+        while(dodaj_wpis1->godzina_pocz == dodaj_wpis1->godzina_kon){
+            printf("Godzina rozpoczecia pracy nie moze byc taka sama jak godzina zakonczenia pracy !!\n");
+            printf("Podaj godzine rozpoczecia pracy: \n");
+            scanf("%d", &dodaj_wpis1->godzina_pocz);
+            printf("Podaj godzine zakonczenia pracy: \n");
+            scanf("%d", &dodaj_wpis1->godzina_kon);
+        }
+        while(dodaj_wpis1->godzina_kon < dodaj_wpis1->godzina_pocz){
+            printf("Nieprawidlowe godziny pracy, wprowadz ponownie !\n");
+            printf("Podaj godzine rozpoczecia: ");
+            scanf("%d", &dodaj_wpis1->godzina_pocz);
+            printf("Podaj godzine zakonczenia: ");
+            scanf("%d", &dodaj_wpis1->godzina_kon);
+        }
+    }
+        dodaj_wpis1 -> nastepny1 = NULL;
+
+        if(koniec1 == NULL){
+                poczatek1 = koniec1 = dodaj_wpis1;
+          }
+
+        else{
+                koniec1->nastepny1 = dodaj_wpis1;
+                koniec1 = dodaj_wpis1;
+        }
+
+            int n;
+            printf("\n\nCzy chcesz dodac kolejnego lekarza?\n[1]Tak.\n[2]Nie.");
+            scanf("%d", &n);
+            if(n==1){
+                id1++;
+                nowy_lekarz(id1);
+
+            }
+            else if(n==2){
+                return 0;
+            }
+            else while( n == 0 || n > 2){
+                printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+                scanf("%d", &n);
+            }
+return 0;
+}
+
+
+void pokaz_lekarzy(){
+
+    system("cls");
+
+        if(poczatek1 != NULL){
+                dodaj_wpis1 = poczatek1;
+        }
+
+        else{
+            dodaj_wpis1 = NULL;
+            }
+
+        if(dodaj_wpis1 == NULL){
+                printf("\nBaza lekarzy jest pusta!! \n\n");
+        }
+
+        else  while(dodaj_wpis1 != NULL){
+
+                printf("\n*****************************************************************************************************************************");
+                printf("\nNumer ID: \t\t%d",dodaj_wpis1->id);
+                printf("\nImie i Nazwisko: \t%s %s\n",dodaj_wpis1->imie,dodaj_wpis1->nazwisko);
+                printf("PESEL: \t\t\t%s\n",dodaj_wpis1->pesel);
+                printf("Nr PWZ: \t\t%s\n",dodaj_wpis1->numer_pwz);
+                printf("Tytul zawodowy: \t%s\n",dodaj_wpis1->tytul_zawodowy);
+                printf("Specjalizacja: \t\t%s\n",dodaj_wpis1->specjalizacja);
+                printf("E-Mail: \t\t%s\n",dodaj_wpis1->email);
+                printf("Nr telefonu: \t\t+48 %s\n",dodaj_wpis1->telefon);
+                printf("Dni pracy: \t\t");
+                if(dodaj_wpis1->dni_pracy[0] == '1'){
+                    printf("Poniedzialek,");
+                }
+                if(dodaj_wpis1->dni_pracy[1] == '1'){
+                    printf("Wtorek,");
+                }
+                if(dodaj_wpis1->dni_pracy[2] == '1'){
+                    printf("Sroda,");
+                }
+                if(dodaj_wpis1->dni_pracy[3] == '1'){
+                    printf("Czwartek,");
+                }
+                if(dodaj_wpis1->dni_pracy[4] == '1'){
+                    printf("Piatek,");
+                }
+                if(dodaj_wpis1->dni_pracy[5] == '1'){
+                    printf("Sobota,");
+                }
+                if(dodaj_wpis1->dni_pracy[6] == '1'){
+                    printf("Niedziela,");
+                }
+                printf("\nGodziny pracy: \t\t%d.00 - %d.00\n",dodaj_wpis1->godzina_pocz, dodaj_wpis1->godzina_kon);
+
+                dodaj_wpis1 = dodaj_wpis1 -> nastepny1;
+        }
+}
+
+
+
+void wczytaj_lekarzy(char *nazwa_pliku) {
+
+    FILE *wpp;
+    wpp = fopen(nazwa_pliku, "r");
+
+    if (wpp != NULL){
+
+        if((feof(wpp)==0) && (fgetc(wpp)<2)){
+
+
+            fclose(wpp);
+            remove(nazwa_pliku);
+          }
+
+
+        else{
+
+            while(feof(wpp) == 0){
+              dodaj_wpis1 = malloc(sizeof (baza1));
+
+              fscanf(wpp, "%d", &dodaj_wpis1->id);
+              fscanf(wpp, "%s", dodaj_wpis1->imie);
+              fscanf(wpp, "%s", dodaj_wpis1->nazwisko);
+              fscanf(wpp, "%s", dodaj_wpis1->pesel);
+              fscanf(wpp, "%s", dodaj_wpis1->numer_pwz);
+              fscanf(wpp, "%s", dodaj_wpis1->tytul_zawodowy);
+              fscanf(wpp, "%s", dodaj_wpis1->specjalizacja);
+              fscanf(wpp, "%s", dodaj_wpis1->email);
+              fscanf(wpp, "%s", dodaj_wpis1->telefon);
+              fscanf(wpp, "%s", dodaj_wpis1->dni_pracy);
+              fscanf(wpp, "%d", &dodaj_wpis1->godzina_pocz);
+              fscanf(wpp, "%d", &dodaj_wpis1->godzina_kon);
+
+              dodaj_wpis1 -> nastepny1 = NULL;
+
+              if (koniec1 != NULL){
+
+                    koniec1->nastepny1 = dodaj_wpis1;
+                    koniec1 = dodaj_wpis1;
+              }
+
+              else{
+                    koniec1 = poczatek1 = dodaj_wpis1;
+                }
+            }
+        }
+            fclose(wpp);
+    }
+}
+
+
+void zapisz_do_pliku_lekarzy(char* nazwa_pliku){
+
+    FILE* wpp;
+    wpp = fopen(nazwa_pliku, "w");
+
+    dodaj_wpis1 = poczatek1;
+
+        while(dodaj_wpis1 != NULL) {
+
+            fprintf(wpp, "\n\n");
+            fprintf(wpp, "%d\n", dodaj_wpis1->id);
+            fprintf(wpp, "%s\n", dodaj_wpis1->imie);
+            fprintf(wpp, "%s\n", dodaj_wpis1->nazwisko);
+            fprintf(wpp, "%s\n", dodaj_wpis1->pesel);
+            fprintf(wpp, "%s\n", dodaj_wpis1->numer_pwz);
+            fprintf(wpp, "%s\n", dodaj_wpis1->tytul_zawodowy);
+            fprintf(wpp, "%s\n", dodaj_wpis1->specjalizacja);
+            fprintf(wpp, "%s\n", dodaj_wpis1->email);
+            fprintf(wpp, "%s\n", dodaj_wpis1->telefon);
+            fprintf(wpp, "%s\n", dodaj_wpis1->dni_pracy);
+            fprintf(wpp, "%d\n", dodaj_wpis1->godzina_pocz);
+            fprintf(wpp, "%d", dodaj_wpis1->godzina_kon);
+            dodaj_wpis1 = dodaj_wpis1 -> nastepny1;
+        }
+    fclose(wpp);
+}
+
+struct lekarze *usuwanie_lekarzy(struct lekarze *lista1){
+
+    int a;
+    struct lekarze *poprzedni1 = NULL;
+    struct lekarze *tmp1 = lista1;
+    tmp1 = poczatek1;
+    int b = 0;
+
+        if(tmp1 == NULL){
+            system("cls");
+            printf("Baza lekarzy jest pusta !!\n\n");
+            return 0;
+        }
+
+        printf("Podaj numer ID lekarza, ktorego chcesz usunac: \n");
+        scanf("%d", &a);
+
+            while(koniec1->id < a){
+                printf("Podano zly numer!!");
+                printf("Podaj numer ID lekarza, ktorego chcesz usunac: \n");
+                scanf("%d", &a);
+            }
+        tmp1 = poczatek1;
+
+        while(tmp1!=NULL){
+            if(tmp1->id == a){
+                b++;
+            }
+            tmp1 = tmp1->nastepny1;
+        }
+
+        if(b<1){
+            printf("Podano zly numer!!");
+            usuwanie_lekarzy(lista1);
+        }
+
+        tmp1 = poczatek1;
+         while(tmp1->id != NULL){
+                    if(a == tmp1->id){
+                            system("cls");
+                            printf("\n*****************************************************************************************************************************");
+                            printf("\nNumer ID lekarza: \t\t%d",tmp1->id);
+                            printf("\nImie i nazwisko lekarza: \t%s %s", tmp1->imie,tmp1->nazwisko);
+                            break;
+                    }
+                    else{
+                        tmp1 = tmp1->nastepny1;
+                    }
+                }
+
+            printf("\n\nCzy tego lekarza chcesz usunac?\n[1]Tak.\n[2]Nie.\n");
+            int u;
+            scanf("%d", &u);
+            if(u==1){
+            }
+            else if(u==2){
+                usuwanie_lekarzy(lista1);
+            }
+
+            int i = 0;
+            tmp1 = poczatek1;
+            while(tmp1 != NULL){
+
+                    if(tmp1->id == a){
+                        tmp1 = tmp1->nastepny1;
+                        i++;
+                    }
+
+                    else {
+                        tmp1 = tmp1->nastepny1;
+                    }
+                }
+            if(i<1){
+                system("cls");
+                printf("Nie ma lekarza o podanym ID!!\n\n");
+                usuwanie_lekarzy(lista1);
+            }
+            tmp1 = poczatek1;
+
+
+            while(tmp1){
+                if(tmp1->id==a){
+                        if(poprzedni1==NULL){
+                            struct lekarze *poczatek1 = tmp1->nastepny1;
+                            free(tmp1);
+                            return poczatek1;
+                        }
+                        else{
+                            poprzedni1->nastepny1=tmp1->nastepny1;
+                            free(tmp1);
+                           return lista1;
+                        }
+                }
+                else{
+                    poprzedni1=tmp1;
+                    tmp1=tmp1->nastepny1;
+                }
+    }
+return 0;
+}
+
+int edycja_lekarzy(){
+
+if(dodaj_wpis1 == NULL){
+            system("cls");
+            printf("Baza lekarzy jest pusta !!\n\n");
+            return 0;
+        }
+    dodaj_wpis1 = poczatek1;
+    int a, b;
+
+            printf("Podaj numer ID lekarza, ktorego dane chcesz edytowac: ");
+            scanf("%d", &a);
+            while(koniec1->id < a){
+                printf("Nie znaleziono lekarza o podanym ID!!\n\n");
+                edycja_lekarzy();
+            }
+
+            int i = 0;
+            dodaj_wpis1 = poczatek1;
+            while(dodaj_wpis1 != NULL){
+
+                    if(dodaj_wpis1->id == a){
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                        i++;
+
+                    }
+
+                    else {
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                    }
+                }
+            if(i<1){
+                printf("Nie ma lekarza o podanym ID!!\n\n");
+                edycja_lekarzy();
+            }
+
+            system("cls");
+
+            dodaj_wpis1 = poczatek1;
+
+            system("cls");
+
+            while(dodaj_wpis1 != NULL){
+                    if(dodaj_wpis1->id == a){
+                        printf("\n*****************************************************************************************************************************");
+                        printf("\nNumer ID: \t\t%d",dodaj_wpis1->id);
+                        printf("\nImie i Nazwisko: \t%s %s\n",dodaj_wpis1->imie,dodaj_wpis1->nazwisko);
+                        printf("PESEL: \t\t\t%s\n",dodaj_wpis1->pesel);
+                        printf("Nr PWZ: \t\t%s\n",dodaj_wpis1->numer_pwz);
+                        printf("Tytul zawodowy: \t%s\n",dodaj_wpis1->tytul_zawodowy);
+                        printf("Specjalizacja: \t\t%s\n",dodaj_wpis1->specjalizacja);
+                        printf("E-Mail: \t\t%s\n",dodaj_wpis1->email);
+                        printf("Nr telefonu: \t\t+48 %s\n",dodaj_wpis1->telefon);
+                        printf("Godziny pracy: \t\t%d.00 - %d.00\n",dodaj_wpis1->godzina_pocz, dodaj_wpis1->godzina_kon);
+                        break;
+                    }
+                    else{
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                    }
+            }
+
+            dodaj_wpis1 = poczatek1;
+
+            printf("\n\nWybierz pole do edycji: \n [1]Imie.\n [2]Nazwisko.\n [3]Pesel.\n [4]Numer PWZ.\n [5]Tytul zawodowy.\n [6]Specjalizacja.\n [7]Email.\n [8]Telefon.\n [9]Godziny pracy.\n\n [10]MENU.\n");
+            scanf("%d", &b);
+            while(b > 12 || b == 0){
+                printf("Zly numer! Wybierz raz jeszcze!");
+                scanf("%d",&b);
+            }
+
+            if(poczatek1 == NULL){
+                printf("Err");
+
+            }
+
+            else if((poczatek1 != NULL) && ((poczatek1->id == a)) && ((dodaj_wpis1 != NULL))){
+
+                system("cls");
+
+                if(b==1){
+                printf("\nPodaj imie: \n");
+                scanf("%s",dodaj_wpis1->imie);
+                }
+
+                if(b==2){
+                printf("Podaj nazwisko: \n");
+                scanf("%s",dodaj_wpis1->nazwisko);
+                }
+
+                if(b==3){
+                printf("Podaj pesel: \n");
+                scanf("%s", dodaj_wpis1->pesel);
+
+
+                while((strlen(dodaj_wpis1->pesel)!=11)){
+                    printf("Podany pesel jest nieprawidlowy!!\n");
+                    scanf("%s",dodaj_wpis1->pesel);
+                }
+                }
+
+                if(b==4){
+                printf("Podaj nr PWZ: \n");
+                scanf("%s",dodaj_wpis1->numer_pwz);
+                }
+
+                if(b==5){
+                printf("Podaj tytul zawodowy: \n");
+                scanf("%s", dodaj_wpis1->tytul_zawodowy);
+                }
+
+                if(b==6){
+                printf("Podaj specjalizacje: \n");
+                scanf("%s", dodaj_wpis1->specjalizacja);
+                }
+
+                if(b==7){
+                printf("Podaj e-mail: \n");
+                scanf("%s", dodaj_wpis1->email);
+                }
+
+                if(b==8){
+                printf("Podaj nr telefonu: \n");
+                scanf("%s", dodaj_wpis1->telefon);
+
+
+                while((strlen(dodaj_wpis1->telefon)!=9)){
+                printf("Podany nr telefonu jest nieprawidlowy!!\n");
+                scanf("%s",dodaj_wpis1->telefon);
+                }
+                }
+
+                if(b==9){
+                printf("Podaj godzine rozpoczecia pracy: \n");
+                scanf("%d", &dodaj_wpis1->godzina_pocz);
+                while(dodaj_wpis1->godzina_pocz < 6){
+                    printf("Godzina rozpoczecia pracy nie moze byc mniejsza niz 06:00 !\n");
+                    scanf("%d", &dodaj_wpis1->godzina_pocz);
+                }
+
+                printf("Podaj godzine zakonczenia pracy: \n");
+                scanf("%d", &dodaj_wpis1->godzina_kon);
+                while(dodaj_wpis1->godzina_kon > 22){
+                    printf("Godzina zakonczenia pracy nie moze byc wieksza niz 22:00 !\n");
+                    scanf("%d", &dodaj_wpis1->godzina_kon);
+                }
+                while(dodaj_wpis1->godzina_pocz == dodaj_wpis1->godzina_kon){
+                    printf("Godzina rozpoczecia pracy nie moze byc taka sama jak godzina zakonczenia pracy !!\n");
+                    printf("Podaj godzine rozpoczecia pracy: \n");
+                    scanf("%d", &dodaj_wpis1->godzina_pocz);
+                    printf("Podaj godzine zakonczenia pracy: \n");
+                    scanf("%d", &dodaj_wpis1->godzina_kon);
+                }
+
+                while(dodaj_wpis1->godzina_kon < dodaj_wpis1->godzina_pocz){
+                    printf("Nieprawidlowe godziny pracy, wprowadz ponownie !\n");
+                    printf("Podaj godzine rozpoczecia: ");
+                    scanf("%d", &dodaj_wpis1->godzina_pocz);
+                    printf("Podaj godzine zakonczenia: ");
+                    scanf("%d", &dodaj_wpis1->godzina_kon);
+                }
+                }
+
+                if(b==10){
+
+                }
+                }
+
+            else while((dodaj_wpis1!=NULL) && ((dodaj_wpis1->id!=a))){
+
+                dodaj_wpis1 = dodaj_wpis1->nastepny1;
+
+                if(dodaj_wpis1->id ==a){
+
+                system("cls");
+
+                if(b==1){
+                printf("\nPodaj imie: \n");
+                scanf("%s",dodaj_wpis1->imie);
+                }
+
+                if(b==2){
+                printf("Podaj nazwisko: \n");
+                scanf("%s",dodaj_wpis1->nazwisko);
+                }
+
+                if(b==3){
+                printf("Podaj pesel: \n");
+                scanf("%s", dodaj_wpis1->pesel);
+
+
+                while((strlen(dodaj_wpis1->pesel)!=11)){
+                    printf("Podany pesel jest nieprawidlowy!!\n");
+                    scanf("%s",dodaj_wpis1->pesel);
+                }
+                }
+
+                if(b==4){
+                printf("Podaj nr PWZ: \n");
+                scanf("%s",dodaj_wpis1->numer_pwz);
+                }
+
+                if(b==5){
+                printf("Podaj tytul zawodowy: \n");
+                scanf("%s", dodaj_wpis1->tytul_zawodowy);
+                }
+
+                if(b==6){
+                printf("Podaj specjalizacje: \n");
+                scanf("%s", dodaj_wpis1->specjalizacja);
+                }
+
+                if(b==7){
+                printf("Podaj e-mail: \n");
+                scanf("%s", dodaj_wpis1->email);
+                }
+
+                if(b==8){
+                printf("Podaj nr telefonu: \n");
+                scanf("%s", dodaj_wpis1->telefon);
+
+                while((strlen(dodaj_wpis1->telefon)!=9)){
+                printf("Podany nr telefonu jest nieprawidlowy!!\n");
+                scanf("%s",dodaj_wpis1->telefon);
+                    }
+                }
+
+                if(b==9){
+                printf("Podaj godzine rozpoczecia pracy: \n");
+                scanf("%d", &dodaj_wpis1->godzina_pocz);
+                while(dodaj_wpis1->godzina_pocz < 6){
+                    printf("Godzina rozpoczecia pracy nie moze byc mniejsza niz 06:00 !\n");
+                    scanf("%d", &dodaj_wpis1->godzina_pocz);
+                }
+
+                printf("Podaj godzine zakonczenia pracy: \n");
+                scanf("%d", &dodaj_wpis1->godzina_kon);
+                while(dodaj_wpis1->godzina_kon > 22){
+                    printf("Godzina zakonczenia pracy nie moze byc wieksza niz 22:00 !\n");
+                    scanf("%d", &dodaj_wpis1->godzina_kon);
+                }
+                while(dodaj_wpis1->godzina_pocz == dodaj_wpis1->godzina_kon){
+                    printf("Godzina rozpoczecia pracy nie moze byc taka sama jak godzina zakonczenia pracy !!\n");
+                    printf("Podaj godzine rozpoczecia pracy: \n");
+                    scanf("%d", &dodaj_wpis1->godzina_pocz);
+                    printf("Podaj godzine zakonczenia pracy: \n");
+                    scanf("%d", &dodaj_wpis1->godzina_kon);
+                }
+
+                while(dodaj_wpis1->godzina_kon < dodaj_wpis1->godzina_pocz){
+                    printf("Nieprawidlowe godziny pracy, wprowadz ponownie !\n");
+                    printf("Podaj godzine rozpoczecia: ");
+                    scanf("%d", &dodaj_wpis1->godzina_pocz);
+                    printf("Podaj godzine zakonczenia: ");
+                    scanf("%d", &dodaj_wpis1->godzina_kon);
+                }
+                }
+
+                if(b==10){
+                    break;
+                }
+                }
+        }
+         int n;
+            printf("\n\nCzy chcesz edytowac kolejnego lekarza?\n[1]Tak.\n[2]Nie.");
+            scanf("%d", &n);
+            if(n==1){
+                edycja_lekarzy();
+                return 0;
+            }
+            else if(n==2){
+                return 0;
+            }
+            else while( n == 0 || n > 2){
+                printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+                scanf("%d", &n);
+            }
+return 0;
+}
+
+
+int menu_wyszukiwania_lekarzy(){
+    if(dodaj_wpis == NULL){
+            system("cls");
+            printf("Baza lekarzy jest pusta !!\n\n");
+            return 0;
+        }
+    int id_dzialania1;
+    void wyswietl_dane_lekarzy();
+
+    int z = 0;
+
+    int id_lekarza;
+    char imie_lekarza[SIZE];
+    char nazwisko_lekarza[SIZE];
+    char pesel_lekarza[SIZE];
+    char pwz_lekarza[SIZE];
+    char tytul_lekarza[SIZE];
+    char specjalizacja_lekarza[SIZE];
+
+    dodaj_wpis1 = poczatek1;
+
+        printf("Po ktorym polu chcesz wyszukac?\n");
+        printf("1.ID\n2.Imie\n3.Nazwisko\n4.PESEL\n5.Numer PWZ.\n6.Tytul zawodowy lekarza.\n7.Specjalizacja.\n");
+        scanf("%d",&id_dzialania1);
+        while(id_dzialania1 > 7 || id_dzialania1 == 0){
+            printf("Zly numer! Wybierz raz jeszcze!");
+            scanf("%d",&id_dzialania1);
+        }
+
+        if(id_dzialania1 == 1){
+            printf("Podaj ID szukanego pacjenta:");
+            scanf("%d", &id_lekarza);
+
+            while(dodaj_wpis1 != NULL){
+
+                    if(dodaj_wpis1->id == id_lekarza){
+                        wyswietl_dane_lekarzy(dodaj_wpis1);
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                        z++;
+                    }
+
+                    else {
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                    }
+                }
+            }
+
+
+        if(id_dzialania1 == 2){
+            printf("Podaj imie szukanego lekarza:");
+            scanf("%s", imie_lekarza);
+
+            while(dodaj_wpis1 != NULL){
+
+                    if(stricmp(dodaj_wpis1->imie, imie_lekarza)==0){
+                        wyswietl_dane_lekarzy(dodaj_wpis1);
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                        z++;
+                    }
+                    else{
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                    }
+                }
+            }
+
+
+        if(id_dzialania1 == 3){
+            printf("Podaj oddzial szukanego lekarza:");
+            scanf("%s", nazwisko_lekarza);
+
+            while(dodaj_wpis1 != NULL){
+
+                    if(stricmp(dodaj_wpis1->nazwisko, nazwisko_lekarza)==0){
+                        wyswietl_dane_lekarzy(dodaj_wpis1);
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                        z++;
+                    }
+
+                    else{
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                    }
+                }
+            }
+
+
+        if(id_dzialania1 == 4){
+            printf("Podaj pesel szukanego lekarza:");
+            scanf("%s", pesel_lekarza);
+
+            while(dodaj_wpis1 != NULL){
+
+                    if(stricmp(dodaj_wpis1->pesel, pesel_lekarza)==0){
+                        wyswietl_dane_lekarzy(dodaj_wpis1);
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                        z++;
+                    }
+
+                    else{
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                    }
+                }
+            }
+
+
+        if(id_dzialania1 == 5){
+            printf("Podaj numer PWZ szukanego lekarza:");
+            scanf("%s", pwz_lekarza);
+
+            while(dodaj_wpis1 != NULL){
+
+                    if(stricmp(dodaj_wpis1->numer_pwz, pwz_lekarza)==0){
+                        wyswietl_dane_lekarzy(dodaj_wpis1);
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                        z++;
+                    }
+
+                    else{
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                    }
+                }
+            }
+
+            if(id_dzialania1 == 6){
+            printf("Podaj tytul szukanego lekarza:");
+            scanf("%s", tytul_lekarza);
+
+            while(dodaj_wpis1 != NULL){
+
+                    if(stricmp(dodaj_wpis1->tytul_zawodowy, tytul_lekarza)==0){
+                        wyswietl_dane_lekarzy(dodaj_wpis1);
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                        z++;
+                    }
+                    else{
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                    }
+                }
+            }
+
+            if(id_dzialania1 == 7){
+            printf("Podaj specjalizacje szukanego lekarza:");
+            scanf("%s", specjalizacja_lekarza);
+
+            while(dodaj_wpis1 != NULL){
+
+                    if(stricmp(dodaj_wpis1->specjalizacja, specjalizacja_lekarza)==0){
+                        wyswietl_dane_lekarzy(dodaj_wpis1);
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                        z++;
+                    }
+
+                    else{
+                        dodaj_wpis1 = dodaj_wpis1->nastepny1;
+                    }
+                }
+            }
+
+        if(id_dzialania1 > 7){
+            printf("Wybierz wlasciwa liczbe !");
+        }
+
+        if(z<1){
+            printf("Nie znaleziono uzytkownika o podanych danych.\n");
+        }
+
+        int n;
+            printf("\n\nCzy chcesz wyszukac kolejnego lekarza?\n[1]Tak.\n[2]Nie.");
+            scanf("%d", &n);
+            if(n==1){
+                menu_wyszukiwania_lekarzy();
+                return 0;
+            }
+            else if(n==2){
+                return 0;
+            }
+            else while( n == 0 || n > 2){
+                printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+                scanf("%d", &n);
+            }
+return 0;
+}
+
+void wyswietl_dane_lekarzy(){
+
+                printf("\n*****************************************************************************************************************************");
+                printf("\nNumer ID: \t\t%d",dodaj_wpis1->id);
+                printf("\nImie i Nazwisko: \t%s %s\n",dodaj_wpis1->imie,dodaj_wpis1->nazwisko);
+                printf("PESEL: \t\t\t%s\n",dodaj_wpis1->pesel);
+                printf("Nr PWZ: \t\t%s\n",dodaj_wpis1->numer_pwz);
+                printf("Tytul zawodowy: \t%s\n",dodaj_wpis1->tytul_zawodowy);
+                printf("Specjalizacja: \t\t%s\n",dodaj_wpis1->specjalizacja);
+                printf("E-Mail: \t\t%s\n",dodaj_wpis1->email);
+                printf("Nr telefonu: \t\t+48 %s\n",dodaj_wpis1->telefon);
+                printf("Dni pracy: \t\t");
+                if(dodaj_wpis1->dni_pracy[0] == '1'){
+                    printf("Poniedzialek,");
+                }
+                if(dodaj_wpis1->dni_pracy[1] == '1'){
+                    printf("Wtorek,");
+                }
+                if(dodaj_wpis1->dni_pracy[2] == '1'){
+                    printf("Sroda,");
+                }
+                if(dodaj_wpis1->dni_pracy[3] == '1'){
+                    printf("Czwartek,");
+                }
+                if(dodaj_wpis1->dni_pracy[4] == '1'){
+                    printf("Piatek,");
+                }
+                if(dodaj_wpis1->dni_pracy[5] == '1'){
+                    printf("Sobota,");
+                }
+                if(dodaj_wpis1->dni_pracy[6] == '1'){
+                    printf("Niedziela,");
+                }
+                printf("\nGodziny pracy: \t\t%d.00 - %d.00\n",dodaj_wpis1->godzina_pocz, dodaj_wpis1->godzina_kon);
+}
+
+
+/*
+****************************************************                  REJESTRACJA                     ************************************************************************
+*/
+
+
+
+struct wizyty{
+
+    int id;
+    int id_pacjenta;
+    int id_lekarza;
+    int dzien;
+    int miesiac;
+    int rok;
+    int godzina;
+    int minuta;
+    int czas_trwania;
+    int godzina_zakonczenia_wizyty;
+    int minuta_zakonczenia_wizyty;
+    char status_wizyty[SIZE];
+
+
+    struct wizyty *poprzedni2, *nastepny2;
+} baza2;
+
+struct wizyty *dodaj_wpis2;
+struct wizyty *poczatek2 = NULL;
+struct wizyty *koniec2 = NULL;
+
+
+int nowa_wizyta(int id, int id1, int id2, int rok, int miesiac, int dzien, int godzina, int minuta){
+
+    struct pacjenci *tmp;
+    tmp = poczatek;
+
+    struct lekarze *temp;
+    temp = poczatek1;
+
+    int z;
+    int odczyt_dni();
+
+    if(tmp == NULL){
+            system("cls");
+            printf("Baza pacjentow jest pusta !!\n\n");
+            return 0;
+        }
+
+        if(temp == NULL){
+            system("cls");
+            printf("Baza lekarzy jest pusta !!\n\n");
+            return 0;
+        }
+ dodaj_wpis2 = malloc(sizeof (baza2));
+
+    if(!dodaj_wpis2){
+        printf("Nie dziala.");
+        perror("malloc");
+        return EXIT_FAILURE;
+    }
+
+    if (dodaj_wpis2!=NULL){
+
+        system("cls");
+
+        dodaj_wpis2->id = id2;
+
+        printf("Podaj ID pacjenta: ");
+        scanf("%d",&dodaj_wpis2->id_pacjenta);
+
+        while(dodaj_wpis2 != NULL){
+
+                while(dodaj_wpis2->id_pacjenta >= id || dodaj_wpis2->id_pacjenta == 0){
+
+                        system("cls");
+                        printf("Podane ID jest zle, podaj prawidlowe: ");
+                        scanf("%d",&dodaj_wpis2->id_pacjenta);
+
+                }
+
+                    while(tmp->id != dodaj_wpis2->id_pacjenta){
+                        if(tmp->id == dodaj_wpis2->id_pacjenta){
+                            tmp = tmp;
+                        }
+                        else while(tmp->id != dodaj_wpis2->id_pacjenta){
+                            tmp = tmp->nastepny;
+                            if(tmp->id == dodaj_wpis2->id_pacjenta){
+                            tmp = tmp;
+                        }
+                        break;
+                        }
+                        if(koniec->id == tmp->id && tmp->id != dodaj_wpis2->id_pacjenta) {
+                            printf("Nie ma pacjenta o podanym ID, podaj inne: ");
+                            scanf("%d",&dodaj_wpis2->id_pacjenta);
+                            tmp = poczatek;
+                        }
+                    }
+
+                    if(dodaj_wpis2->id_pacjenta == tmp->id){
+
+                    printf("\n*****************************************************************************************************************************");
+                    printf("\nNumer ID pacjenta: \t\t%d",dodaj_wpis2->id_pacjenta);
+                    printf("\nImie i nazwisko pacjenta: \t%s %s", tmp->imie,tmp->nazwisko);
+
+                    printf("\n\nCzy tego pacjenta chcesz umowic na wizyte? \n[1]Tak.\n[2]Nie.\n");
+                    scanf("%d", &z);
+                    if(z==1){
+                        break;
+                    }
+                    else if(z==2){
+                        system("cls");
+                        printf("Podaj ID pacjenta: ");
+                        scanf("%d",&dodaj_wpis2->id_pacjenta);
+                        tmp = poczatek;
+                    }
+                    else while(z==0 || z>2){
+                        printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+                        scanf("%d", &z);
+                    }
+                }
+        }
+
+
+        printf("\nPodaj ID lekarza: \n");
+        scanf("%d",&dodaj_wpis2->id_lekarza);
+
+        while(dodaj_wpis2 != NULL){
+
+                while(dodaj_wpis2->id_lekarza >= id1 || dodaj_wpis2->id_lekarza == 0){
+
+                        system("cls");
+                        printf("Podane ID jest zle, podaj prawidlowe: ");
+                        scanf("%d",&dodaj_wpis2->id_lekarza);
+
+                }
+
+                    while(temp->id != dodaj_wpis2->id_lekarza){
+                        if(temp->id == dodaj_wpis2->id_lekarza){
+                            temp = temp;
+                        }
+                        else while(temp->id != dodaj_wpis2->id_lekarza){
+                            temp = temp->nastepny1;
+                            if(temp->id == dodaj_wpis2->id_lekarza){
+                            temp = temp;
+                        }
+                        break;
+                        }
+                        if(koniec->id == temp->id && temp->id != dodaj_wpis2->id_lekarza) {
+                            printf("Nie ma lekarza o podanym ID, podaj inne: ");
+                            scanf("%d",&dodaj_wpis2->id_lekarza);
+                            temp = poczatek1;
+                        }
+                    }
+
+                    if(dodaj_wpis2->id_lekarza == temp->id){
+
+                    printf("\n*****************************************************************************************************************************");
+                    printf("\nNumer ID lekarza: \t\t%d",dodaj_wpis2->id_lekarza);
+                    printf("\nImie i nazwisko lekarza: \t%s %s", temp->imie,temp->nazwisko);
+                    printf("\nDni pracy: \t\t\t");
+                        if(temp->dni_pracy[0] == '1'){
+                            printf("Poniedzialek,");
+                        }
+                        if(temp->dni_pracy[1] == '1'){
+                            printf("Wtorek,");
+                        }
+                        if(temp->dni_pracy[2] == '1'){
+                            printf("Sroda,");
+                        }
+                        if(temp->dni_pracy[3] == '1'){
+                            printf("Czwartek,");
+                        }
+                        if(temp->dni_pracy[4] == '1'){
+                            printf("Piatek,");
+                        }
+                        if(temp->dni_pracy[5] == '1'){
+                            printf("Sobota,");
+                        }
+                        if(temp->dni_pracy[6] == '1'){
+                            printf("Niedziela,");
+                        }
+                    printf("\nGodziny pracy lekarza: \t\t%d:00 - %d:00", temp->godzina_pocz, temp->godzina_kon);
+
+                    printf("\n\nCzy do tego lekarza chcesz umowic  wizyte? \n[1]Tak.\n[2]Nie.\n");
+                    scanf("%d", &z);
+                    if(z==1){
+                        break;
+                    }
+                    else if(z==2){
+                        system("cls");
+                        printf("Podaj ID lekarza: ");
+                        scanf("%d",&dodaj_wpis2->id_lekarza);
+                        temp = poczatek1;
+                    }
+                    else while(z==0 || z>2){
+                        printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+                        scanf("%d", &z);
+                    }
+                }
+        }
+
+        printf("Podaj rok wizyty: \n");
+        scanf("%d", &dodaj_wpis2->rok);
+
+        while(dodaj_wpis2->rok < rok){
+            printf("Podaj rok wizyty ponownie (nie moze byc mniejszy niz aktualny): ");
+            scanf("%d", &dodaj_wpis2->rok);
+        }
+
+        printf("Podaj miesiac wizyty: \n");
+        scanf("%d", &dodaj_wpis2->miesiac);
+
+        if(dodaj_wpis2->rok == rok){
+            while(dodaj_wpis2->miesiac < miesiac || dodaj_wpis2->miesiac > 12){
+                printf("Podaj miesiac wizyty ponownie: ");
+                scanf("%d", &dodaj_wpis2->miesiac);
+            }
+        }
+        else if(dodaj_wpis2->rok > rok){
+            dodaj_wpis2->miesiac = dodaj_wpis2->miesiac;
+        }
+
+        printf("Podaj dzien wizyty: \n");
+        scanf("%d", &dodaj_wpis2->dzien);
+
+        if(dodaj_wpis2->rok == rok){
+            if(dodaj_wpis2->miesiac == miesiac){
+                while(dodaj_wpis2->dzien < dzien || dodaj_wpis2->dzien > 31){
+                    printf("Podaj dzien wizyty ponownie: ");
+                    scanf("%d", &dodaj_wpis2->dzien);
+                }
+            }
+            else if(dodaj_wpis2->miesiac > miesiac){
+                    while(dodaj_wpis2->dzien > 31){
+                    printf("Podaj dzien wizyty ponownie: ");
+                    scanf("%d", &dodaj_wpis2->dzien);
+                }
+                dodaj_wpis2->dzien = dodaj_wpis2->dzien;
+            }
+        }
+        else if(dodaj_wpis2->rok > rok){
+                while(dodaj_wpis2->dzien > 31){
+                    printf("Podaj dzien wizyty ponownie: ");
+                    scanf("%d", &dodaj_wpis2->dzien);
+                }
+            dodaj_wpis2->dzien = dodaj_wpis2->dzien;
+        }
+        char dzien_wizyty[];
+        printf("\nDzien wizyty to: ");
+        odczyt_dni(dodaj_wpis2->rok, dodaj_wpis2->miesiac, dodaj_wpis2->dzien);
+        printf("\n\n");
+        printf("%s", dzien_wizyty);
+
+
+                if(temp->dni_pracy[0] == '1' && strcmp(dzien_wizyty, "Poniedzialek")==0){
+                    printf("CHUUUUUJ");
+                }
+                if(temp->dni_pracy[1] == '1' && strcmp(dzien_wizyty, "Wtorek")==0){
+                    printf("Wtorek,");
+                }
+                if(temp->dni_pracy[2] == '1' && strcmp(dzien_wizyty, "Sroda")==0){
+                    printf("CIPAAAAAAAAAA");
+                }
+                if(temp->dni_pracy[3] == '1'){
+                    printf("Czwartek,");
+                }
+                if(temp->dni_pracy[4] == '1'){
+                    printf("Piatek,");
+                }
+                if(temp->dni_pracy[5] == '1'){
+                    printf("Sobota,");
+                }
+                if(temp->dni_pracy[6] == '1'){
+                    printf("Niedziela,");
+                }
+
+
+
+
+        printf("\nPodaj godzine wizyty: \n");
+        scanf("%d", &dodaj_wpis2->godzina);
+        while((dodaj_wpis2->godzina < temp->godzina_pocz || dodaj_wpis2->godzina >= temp->godzina_kon)){
+            printf("Ten lekarz teraz nie pracuje! Podaj prawidlowa godzine!");
+            scanf("%d", &dodaj_wpis2->godzina);
+        }
+        int i = 0;
+        if(dodaj_wpis2->rok == rok){
+            if(dodaj_wpis2->miesiac == miesiac){
+               if(dodaj_wpis2->dzien == dzien){
+                    while(dodaj_wpis2->godzina < godzina || dodaj_wpis2->godzina > temp->godzina_kon){
+                        printf("Podaj godzine wizyty ponownie: ");
+                        scanf("%d", &dodaj_wpis2->godzina);
+                        i++;
+                        if(i>5){
+                            printf("Stworz wizyte ponownie z innymi danymi!!");
+                            sleep(100);
+                            nowa_wizyta(id, id1, id2, rok, miesiac, dzien, godzina, minuta);
+                        }
+                    }
+                }
+                    else if(dodaj_wpis2->dzien > dzien){
+                        dodaj_wpis2->dzien = dodaj_wpis2->dzien;
+                    }
+                }
+            else if(dodaj_wpis2->miesiac > miesiac){
+                    dodaj_wpis2->miesiac = dodaj_wpis2->miesiac;
+            }
+        }
+        else if(dodaj_wpis2->rok > rok){
+            dodaj_wpis2->dzien = dodaj_wpis2->dzien;
+        }
+        while(dodaj_wpis2->godzina > 23){
+            printf("Podaj prawidlowa godzine!");
+            scanf("%d", &dodaj_wpis2->godzina);
+        }
+
+        printf("Podaj minute wizyty: \n");
+        scanf("%d", &dodaj_wpis2->minuta);
+
+        if(dodaj_wpis2->rok == rok){
+            if(dodaj_wpis2->miesiac == miesiac){
+               if(dodaj_wpis2->dzien == dzien){
+                    if(dodaj_wpis2->godzina == godzina){
+                        while(dodaj_wpis2->minuta < minuta){
+                            printf("Podaj minute wizyty ponownie (nie moze byc mniejsza niz aktualna): ");
+                            scanf("%d", &dodaj_wpis2->minuta);
+                            }
+                    }
+                    else if(dodaj_wpis2->godzina > godzina){
+                        dodaj_wpis2->godzina = dodaj_wpis2->godzina;
+                    }
+                }
+                    else if(dodaj_wpis2->dzien > dzien){
+                        dodaj_wpis2->dzien = dodaj_wpis2->dzien;
+                    }
+                }
+            else if(dodaj_wpis2->miesiac > miesiac){
+                    dodaj_wpis2->miesiac = dodaj_wpis2->miesiac;
+            }
+        }
+        else if(dodaj_wpis2->rok > rok){
+            dodaj_wpis2->dzien = dodaj_wpis2->dzien;
+        }
+        while(dodaj_wpis2->minuta > 59){
+            printf("Podaj prawidlowa minute!");
+            scanf("%d", &dodaj_wpis2->minuta);
+        }
+
+
+
+
+        printf("Podaj czas trwania wizyty w minutach: \n");
+        scanf("%d", &dodaj_wpis2->czas_trwania);
+
+        while(dodaj_wpis2->czas_trwania > 60){
+            printf("Wizyta moze trwac maksymalnie 60 minut. Wprowadz czas trwania ponownie: ");
+            scanf("%d", &dodaj_wpis2->czas_trwania);
+        }
+
+        strcpy(dodaj_wpis2->status_wizyty , "Zaplanowana");
+
+
+
+        dodaj_wpis2->godzina_zakonczenia_wizyty = dodaj_wpis2->godzina;
+        dodaj_wpis2->minuta_zakonczenia_wizyty = dodaj_wpis2->minuta;
+
+        dodaj_wpis2->minuta_zakonczenia_wizyty = (dodaj_wpis2->minuta) + (dodaj_wpis2->czas_trwania);
+
+        if(dodaj_wpis2->minuta_zakonczenia_wizyty >= 60){
+
+            dodaj_wpis2->godzina_zakonczenia_wizyty += 1;
+            dodaj_wpis2->minuta_zakonczenia_wizyty = (dodaj_wpis2->minuta + dodaj_wpis2->czas_trwania) - 60;
+        }
+
+        while(dodaj_wpis2->godzina_zakonczenia_wizyty > temp->godzina_kon){
+            printf("\n\nLekarz nie pracuje do tej godziny. Wybierz inna !\n");
+            printf("Podaj godzine wizyty: ");
+            scanf("%d", &dodaj_wpis2->godzina);
+            printf("Podaj minute wizyty: ");
+            scanf("%d", &dodaj_wpis2->minuta);
+            printf("Podaj czas trwania wizyty: ");
+            scanf("%d", &dodaj_wpis2->czas_trwania);
+
+            dodaj_wpis2->godzina_zakonczenia_wizyty = dodaj_wpis2->godzina;
+            dodaj_wpis2->minuta_zakonczenia_wizyty = dodaj_wpis2->minuta;
+
+            dodaj_wpis2->minuta_zakonczenia_wizyty = (dodaj_wpis2->minuta) + (dodaj_wpis2->czas_trwania);
+
+            if(dodaj_wpis2->minuta_zakonczenia_wizyty >= 60){
+
+                dodaj_wpis2->godzina_zakonczenia_wizyty += 1;
+                dodaj_wpis2->minuta_zakonczenia_wizyty = (dodaj_wpis2->minuta + dodaj_wpis2->czas_trwania) - 60;
+            }
+        }
+
+        }
+        dodaj_wpis2 -> nastepny2 = NULL;
+
+        if(koniec2 == NULL){
+                poczatek2 = koniec2 = dodaj_wpis2;
+          }
+
+        else{
+                koniec2->nastepny2 = dodaj_wpis2;
+                koniec2 = dodaj_wpis2;
+        }
+        int n;
+            printf("\n\nCzy chcesz umowic kolejna wizyte?\n[1]Tak.\n[2]Nie.");
+            scanf("%d", &n);
+            if(n==1){
+                id2++;
+                nowa_wizyta(id, id1, id2, rok, miesiac, dzien, godzina, minuta);
+            }
+            else if(n==2){
+                return 0;
+            }
+            else while( n == 0 || n > 2){
+                printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+                scanf("%d", &n);
+            }
+return 0;
+}
+
+
+void wczytaj_wizyty(char* nazwa_pliku) {
+
+    FILE *wppp;
+    wppp = fopen(nazwa_pliku, "r");
+
+
+    if (wppp != NULL){
+
+
+        if((feof(wppp)==0) && (fgetc(wppp)<2)){
+
+
+            fclose(wppp);
+            remove(nazwa_pliku);
+          }
+
+
+        else{
+
+            while(feof(wppp) == 0){
+              dodaj_wpis2 = malloc(sizeof (baza2));
+
+              fscanf(wppp, "%d", &dodaj_wpis2->id);
+              fscanf(wppp, "%d", &dodaj_wpis2->id_pacjenta);
+              fscanf(wppp, "%d", &dodaj_wpis2->id_lekarza);
+              fscanf(wppp, "%d", &dodaj_wpis2->rok);
+              fscanf(wppp, "%d", &dodaj_wpis2->miesiac);
+              fscanf(wppp, "%d", &dodaj_wpis2->dzien);
+              fscanf(wppp, "%d", &dodaj_wpis2->godzina);
+              fscanf(wppp, "%d", &dodaj_wpis2->minuta);
+              fscanf(wppp, "%d", &dodaj_wpis2->czas_trwania);
+              fscanf(wppp, "%d", &dodaj_wpis2->godzina_zakonczenia_wizyty);
+              fscanf(wppp, "%d", &dodaj_wpis2->minuta_zakonczenia_wizyty);
+              fscanf(wppp, "%s", dodaj_wpis2->status_wizyty);
+
+              dodaj_wpis2 -> nastepny2 = NULL;
+
+              if (koniec2 != NULL){
+
+                    koniec2->nastepny2 = dodaj_wpis2;
+                    koniec2 = dodaj_wpis2;
+              }
+
+              else{
+                    koniec2 = poczatek2 = dodaj_wpis2;
+                }
+            }
+        }
+            fclose(wppp);
+    }
+}
+
+
+void zapisz_do_pliku_wizyty(char* nazwa_pliku){
+
+    FILE* wppp;
+    wppp = fopen(nazwa_pliku, "w");
+
+    dodaj_wpis2 = poczatek2;
+
+        while(dodaj_wpis2 != NULL) {
+
+            fprintf(wppp, "\n\n");
+            fprintf(wppp, "%d\n", dodaj_wpis2->id);
+            fprintf(wppp, "%d\n", dodaj_wpis2->id_pacjenta);
+            fprintf(wppp, "%d\n", dodaj_wpis2->id_lekarza);
+            fprintf(wppp, "%d\n", dodaj_wpis2->rok);
+            fprintf(wppp, "%d\n", dodaj_wpis2->miesiac);
+            fprintf(wppp, "%d\n", dodaj_wpis2->dzien);
+            fprintf(wppp, "%d\n", dodaj_wpis2->godzina);
+            fprintf(wppp, "%d\n", dodaj_wpis2->minuta);
+            fprintf(wppp, "%d\n", dodaj_wpis2->czas_trwania);
+            fprintf(wppp, "%d\n", dodaj_wpis2->godzina_zakonczenia_wizyty);
+            fprintf(wppp, "%d\n", dodaj_wpis2->minuta_zakonczenia_wizyty);
+            fprintf(wppp, "%s", dodaj_wpis2->status_wizyty);
+            dodaj_wpis2 = dodaj_wpis2 -> nastepny2;
+
+        }
+    fclose(wppp);
+}
+
+void pokaz_wizyty_ograniczone(){
+
+    if(poczatek2 == NULL){
+            system("cls");
+            printf("Baza danych jest pusta !!\n\n");
+            return ;
+        }
+
+    system("cls");
+
+    char odbyta[] = "Odbyta";
+    char zaplanowana[] = "Zaplanowana";
+    char odwolana[] = "Odwolana";
+
+    int rok, miesiac, dzien;
+    int pokaz_wizyty();
+    int wyswietl_wizyty_po_id1();
+    int i = 0;
+
+
+    printf("Czy chcesz ograniczyc wyniki wyszukiwania do konkretnego statusu lub dnia?\n[1]Tak - status.\n[2]Tak - dzien.\n[3]Nie.\n");
+    int wybor;
+    scanf("%d", &wybor);
+
+    if(wybor == 1){
+        printf("\nDo jakiego statusu chcesz ograniczyc?\n[1]Wizyta odbyta.\n[2]Wizyta zaplanowana.\n[3]Wizyta odwolana.\n");
+        int status;
+        scanf("%d", &status);
+
+
+            if(status == 1){
+                dodaj_wpis2 = poczatek2;
+
+                while(dodaj_wpis2 != NULL){
+
+                        if(stricmp(dodaj_wpis2->status_wizyty, odbyta)==0){
+                            wyswietl_wizyty_po_id1();
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                            i++;
+                        }
+                        else{
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                    }
+                }
+
+
+            if(status == 2){
+                dodaj_wpis2 = poczatek2;
+
+                while(dodaj_wpis2 != NULL){
+
+                        if(stricmp(dodaj_wpis2->status_wizyty, zaplanowana)==0){
+                            wyswietl_wizyty_po_id1();
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                            i++;
+                        }
+                        else{
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                    }
+                }
+
+
+
+            if(status == 3){
+                dodaj_wpis2 = poczatek2;
+
+                while(dodaj_wpis2 != NULL){
+
+                        if(stricmp(dodaj_wpis2->status_wizyty, odwolana)==0){
+                            wyswietl_wizyty_po_id1();
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                            i++;
+                        }
+                        else{
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                    }
+                }
+    }
+
+
+    if(wybor == 2){
+        printf("\nDo jakiego dnia chcesz ograniczyc?\n");
+        printf("Podaj rok wizyty: ");
+        scanf("%d", &rok);
+        printf("Podaj miesiac wizyty: ");
+        scanf("%d", &miesiac);
+        printf("Podaj dzien wizyty: ");
+        scanf("%d", &dzien);
+
+        dodaj_wpis2 = poczatek2;
+
+        while(dodaj_wpis2!= NULL){
+
+            if(dodaj_wpis2->rok == rok && dodaj_wpis2->miesiac == miesiac && dodaj_wpis2->dzien == dzien){
+
+                i++;
+                wyswietl_wizyty_po_id1(dodaj_wpis2);
+                dodaj_wpis2 = dodaj_wpis2->nastepny2;
+            }
+            else{
+                dodaj_wpis2 = dodaj_wpis2->nastepny2;
+            }
+        }
+    }
+
+
+    else if (wybor==3){
+        dodaj_wpis2 = poczatek2;
+        pokaz_wizyty(dodaj_wpis2);
+        i++;
+    }
+
+    if(i==0){
+            printf("Brak tak spersonalizowanych wizyt!!\n");
+        }
+
+    int n;
+            printf("\n\nCzy chcesz wyszukac kolejna wizyte?\n[1]Tak.\n[2]Nie.");
+            scanf("%d", &n);
+            if(n==1){
+                pokaz_wizyty_ograniczone();
+            }
+            else if(n==2){
+                return ;
+            }
+            else while( n == 0 || n > 2){
+                printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+                scanf("%d", &n);
+            }
+return ;
+}
+
+
+int pokaz_wizyty(){
+
+    system("cls");
+
+    if(poczatek2 == NULL){
+            system("cls");
+            printf("Baza danych jest pusta !!\n\n");
+            return 0;
+        }
+        int odczyt_dni();
+
+    struct pacjenci *tmp;
+    tmp = poczatek;
+
+    struct lekarze *temp;
+    temp = poczatek1;
+
+        if(poczatek2 != NULL){
+                dodaj_wpis2 = poczatek2;
+        }
+
+            else{
+                dodaj_wpis2 = NULL;
+            }
+
+
+
+                if(dodaj_wpis2 == NULL){
+                    printf("\nBaza pacjentow jest pusta!!.\n\n");
+                }
+
+                    else  while(dodaj_wpis2 != NULL){
+
+                            while(tmp->id != dodaj_wpis2->id_pacjenta){
+                                if(tmp->id == dodaj_wpis2->id_pacjenta){
+                                    tmp = tmp;
+                                }
+                                else{
+                                    tmp = tmp->nastepny;
+                                }
+                            }
+
+                            while(temp->id != dodaj_wpis2->id_lekarza){
+                                if(temp->id == dodaj_wpis2->id_lekarza){
+                                    temp = temp;
+                                }
+                                else{
+                                    temp = temp->nastepny1;
+                                }
+                            }
+
+                            if(dodaj_wpis2->id_pacjenta == tmp->id && dodaj_wpis2->id_lekarza == temp->id){
+
+                            printf("\n*****************************************************************************************************************************");
+                            printf("\nNumer ID wizyty: \t\t%d",dodaj_wpis2->id);
+                            printf("\nNumer ID pacjenta: \t\t%d",dodaj_wpis2->id_pacjenta);
+                            printf("\nImie i nazwisko pacjenta: \t%s %s", tmp->imie,tmp->nazwisko);
+                            printf("\nNumer ID lekarza: \t\t%d",dodaj_wpis2->id_lekarza);
+                            printf("\nImie i nazwisko lekarza: \t%s %s", temp->imie,temp->nazwisko);
+                            printf("\nGodziny pracy lekarza: \t\t%d:00-%d:00", temp->godzina_pocz, temp->godzina_kon);
+                            printf("\nData wizyty: \t\t\t%d.%d.%d", dodaj_wpis2->dzien, dodaj_wpis2->miesiac, dodaj_wpis2->rok);
+                            printf("\nDzien wizyty to: \t\t");
+                            odczyt_dni(dodaj_wpis2->rok, dodaj_wpis2->miesiac, dodaj_wpis2->dzien);
+                            printf("\nGodzina wizyty: \t\t%d:%d", dodaj_wpis2->godzina, dodaj_wpis2->minuta);
+                            printf("\nCzas trwania wizyty: \t\t%d", dodaj_wpis2->czas_trwania);
+                            printf("\nGodzina zakonczenia wizyty: \t%d:%d", dodaj_wpis2->godzina_zakonczenia_wizyty, dodaj_wpis2->minuta_zakonczenia_wizyty);
+                            printf("\nStatus wizyty: \t\t\t%s\n", dodaj_wpis2->status_wizyty);
+                            dodaj_wpis2 = dodaj_wpis2 -> nastepny2;
+                            temp=poczatek1;
+                            tmp=poczatek;
+                        }
+                    }
+                    return 0;
+}
+
+
+int edycja_wizyt(int id2, int rok, int miesiac, int dzien, int godzina, int minuta){
+
+    struct pacjenci *tmp;
+    tmp = poczatek;
+
+    struct lekarze *temp;
+    temp = poczatek1;
+
+    system("cls");
+
+    if(poczatek2 == NULL){
+            system("cls");
+            printf("Baza danych jest pusta !!\n\n");
+            return 0;
+        }
+
+    int wyswietl_wizyty_po_id1();
+    int odczyt_dni();
+    int id_szukane;
+    int b;
+    int i = 0;
+    printf("Podaj ID wizyty, ktorej dane chcesz edytowac: ");
+    scanf("%d", &id_szukane);
+
+    dodaj_wpis2 = poczatek2;
+
+    int z = 0;
+            dodaj_wpis2 = poczatek2;
+            while(dodaj_wpis2 != NULL){
+
+                    if(dodaj_wpis2->id == id_szukane){
+                        dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        z++;
+
+                    }
+
+                    else {
+                        dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                    }
+                }
+            if(z<1){
+                printf("Nie ma wizyty o podanym ID!!\n\n");
+                edycja_wizyt(id2, rok, miesiac, dzien, godzina, minuta);
+            }
+
+            dodaj_wpis2 = poczatek2;
+
+
+    while(dodaj_wpis2 != NULL){
+
+
+            while(id_szukane >= id2 || id_szukane == 0){
+
+                        system("cls");
+                        printf("Podane ID jest zle, podaj prawidlowe: ");
+                        scanf("%d",&id_szukane);
+                }
+
+            while(tmp->id != dodaj_wpis2->id_pacjenta){
+                        if(tmp->id == dodaj_wpis2->id_pacjenta){
+                            tmp = tmp;
+                        }
+                        else{
+                            tmp = tmp->nastepny;
+                        }
+
+                    }
+
+            while(temp->id != dodaj_wpis2->id_lekarza){
+                        if(temp->id == dodaj_wpis2->id_lekarza){
+                            temp = temp;
+                        }
+                        else{
+                            temp = temp->nastepny1;
+                        }
+
+                    }
+                    temp = poczatek1;
+                    tmp = poczatek;
+
+
+        if(dodaj_wpis2->id == id_szukane){
+            i++;
+            wyswietl_wizyty_po_id1(dodaj_wpis2);
+            break;
+        }
+        else{
+            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+        }
+
+
+    }
+
+
+    printf("\n\nCo chcesz zrobic?\n[1]Odwolaj wizyte.\n[2]Zmien termin wizyty.\n");
+    scanf("%d", &b);
+
+    char s1[]="Zaplanowana";
+
+    if(poczatek == NULL){
+                printf("Err");
+                return 0;
+        }
+
+
+        if(b==1){
+
+                if(stricmp(dodaj_wpis2->status_wizyty, s1)==0){
+
+                        strcpy(dodaj_wpis2->status_wizyty , "Odwolana");
+                }
+            else{
+                printf("Tej wizyty nie mozesz odwolac !!");
+        }
+    }
+
+    else{
+
+
+        if(stricmp(dodaj_wpis2->status_wizyty, s1)==0){
+
+        printf("Podaj rok wizyty: \n");
+        scanf("%d", &dodaj_wpis2->rok);
+
+        while(dodaj_wpis2->rok < rok){
+            printf("Podaj rok wizyty ponownie (nie moze byc mniejszy niz aktualny): ");
+            scanf("%d", &dodaj_wpis2->rok);
+        }
+
+        printf("Podaj miesiac wizyty: \n");
+        scanf("%d", &dodaj_wpis2->miesiac);
+
+        if(dodaj_wpis2->rok == rok){
+            while(dodaj_wpis2->miesiac < miesiac || dodaj_wpis2->miesiac > 12){
+                printf("Podaj miesiac wizyty ponownie: ");
+                scanf("%d", &dodaj_wpis2->miesiac);
+            }
+        }
+        else if(dodaj_wpis2->rok > rok){
+            dodaj_wpis2->miesiac = dodaj_wpis2->miesiac;
+        }
+
+        printf("Podaj dzien wizyty: \n");
+        scanf("%d", &dodaj_wpis2->dzien);
+
+        if(dodaj_wpis2->rok == rok){
+            if(dodaj_wpis2->miesiac == miesiac){
+                while(dodaj_wpis2->dzien < dzien || dodaj_wpis2->dzien > 31){
+                    printf("Podaj dzien wizyty ponownie: ");
+                    scanf("%d", &dodaj_wpis2->dzien);
+                }
+            }
+            else if(dodaj_wpis2->miesiac > miesiac){
+                    while(dodaj_wpis2->dzien > 31){
+                    printf("Podaj dzien wizyty ponownie: ");
+                    scanf("%d", &dodaj_wpis2->dzien);
+                }
+                dodaj_wpis2->dzien = dodaj_wpis2->dzien;
+            }
+        }
+        else if(dodaj_wpis2->rok > rok){
+                while(dodaj_wpis2->dzien > 31){
+                    printf("Podaj dzien wizyty ponownie: ");
+                    scanf("%d", &dodaj_wpis2->dzien);
+                }
+            dodaj_wpis2->dzien = dodaj_wpis2->dzien;
+        }
+
+        printf("\nDzien wizyty to: ");
+        odczyt_dni(dodaj_wpis2->rok, dodaj_wpis2->miesiac, dodaj_wpis2->dzien);
+        printf("\n\n");
+
+        printf("Podaj godzine wizyty: \n");
+        scanf("%d", &dodaj_wpis2->godzina);
+        while(dodaj_wpis2->godzina < temp->godzina_pocz || dodaj_wpis2->godzina >= temp->godzina_kon){
+            printf("Ten lekarz teraz nie pracuje! Podaj prawidlowa godzine!");
+            scanf("%d", &dodaj_wpis2->godzina);
+        }
+
+        if(dodaj_wpis2->rok == rok){
+            if(dodaj_wpis2->miesiac == miesiac){
+               if(dodaj_wpis2->dzien == dzien){
+                    while(dodaj_wpis2->godzina < godzina){
+                        printf("Podaj godzine wizyty ponownie (nie moze byc mniejsza niz aktualna): ");
+                        scanf("%d", &dodaj_wpis2->godzina);
+                    }
+                }
+                    else if(dodaj_wpis2->dzien > dzien){
+                        dodaj_wpis2->dzien = dodaj_wpis2->dzien;
+                    }
+                }
+            else if(dodaj_wpis2->miesiac > miesiac){
+                    dodaj_wpis2->miesiac = dodaj_wpis2->miesiac;
+            }
+        }
+        else if(dodaj_wpis2->rok > rok){
+            dodaj_wpis2->dzien = dodaj_wpis2->dzien;
+        }
+        while(dodaj_wpis2->godzina > 23){
+            printf("Podaj prawidlowa godzine!");
+            scanf("%d", &dodaj_wpis2->godzina);
+        }
+
+        printf("Podaj minute wizyty: \n");
+        scanf("%d", &dodaj_wpis2->minuta);
+
+        if(dodaj_wpis2->rok == rok){
+            if(dodaj_wpis2->miesiac == miesiac){
+               if(dodaj_wpis2->dzien == dzien){
+                    if(dodaj_wpis2->godzina == godzina){
+                        while(dodaj_wpis2->minuta < minuta){
+                            printf("Podaj minute wizyty ponownie (nie moze byc mniejsza niz aktualna): ");
+                            scanf("%d", &dodaj_wpis2->minuta);
+                            }
+                    }
+                    else if(dodaj_wpis2->godzina > godzina){
+                        dodaj_wpis2->godzina = dodaj_wpis2->godzina;
+                    }
+                }
+                    else if(dodaj_wpis2->dzien > dzien){
+                        dodaj_wpis2->dzien = dodaj_wpis2->dzien;
+                    }
+                }
+            else if(dodaj_wpis2->miesiac > miesiac){
+                    dodaj_wpis2->miesiac = dodaj_wpis2->miesiac;
+            }
+        }
+        else if(dodaj_wpis2->rok > rok){
+            dodaj_wpis2->dzien = dodaj_wpis2->dzien;
+        }
+        while(dodaj_wpis2->minuta > 59){
+            printf("Podaj prawidlowa minute!");
+            scanf("%d", &dodaj_wpis2->minuta);
+        }
+
+
+
+
+        printf("Podaj czas trwania wizyty w minutach: \n");
+        scanf("%d", &dodaj_wpis2->czas_trwania);
+
+        while(dodaj_wpis2->czas_trwania > 60){
+            printf("Wizyta moze trwac maksymalnie 60 minut. Wprowadz czas trwania ponownie: ");
+            scanf("%d", &dodaj_wpis2->czas_trwania);
+        }
+
+
+        dodaj_wpis2->godzina_zakonczenia_wizyty = dodaj_wpis2->godzina;
+        dodaj_wpis2->minuta_zakonczenia_wizyty = dodaj_wpis2->minuta;
+
+        dodaj_wpis2->minuta_zakonczenia_wizyty = (dodaj_wpis2->minuta) + (dodaj_wpis2->czas_trwania);
+
+        if(dodaj_wpis2->minuta_zakonczenia_wizyty >= 60){
+
+            dodaj_wpis2->godzina_zakonczenia_wizyty += 1;
+            dodaj_wpis2->minuta_zakonczenia_wizyty = (dodaj_wpis2->minuta + dodaj_wpis2->czas_trwania) - 60;
+        }
+
+        while(dodaj_wpis2->godzina_zakonczenia_wizyty > dodaj_wpis2->godzina){
+            printf("\n\nLekarz nie pracuje do tej godziny. Wybierz inna !\n");
+            printf("Podaj godzine wizyty: ");
+            scanf("%d", &dodaj_wpis2->godzina);
+            printf("Podaj minute wizyty: ");
+            scanf("%d", &dodaj_wpis2->minuta);
+            printf("Podaj czas trwania wizyty: ");
+            scanf("%d", &dodaj_wpis2->czas_trwania);
+
+            dodaj_wpis2->godzina_zakonczenia_wizyty = dodaj_wpis2->godzina;
+            dodaj_wpis2->minuta_zakonczenia_wizyty = dodaj_wpis2->minuta;
+
+            dodaj_wpis2->minuta_zakonczenia_wizyty = (dodaj_wpis2->minuta) + (dodaj_wpis2->czas_trwania);
+
+            if(dodaj_wpis2->minuta_zakonczenia_wizyty >= 60){
+
+                dodaj_wpis2->godzina_zakonczenia_wizyty += 1;
+                dodaj_wpis2->minuta_zakonczenia_wizyty = (dodaj_wpis2->minuta + dodaj_wpis2->czas_trwania) - 60;
+            }
+        }
+    }
+    if((stricmp(dodaj_wpis2->status_wizyty, s1)!=0)){
+        printf("Nie mozna edytowac!");
+    }
+    }
+
+            //else{
+             //   printf("Nie mozesz zmienic daty niezaplanowanej wizyty!");
+           // }
+
+
+
+    if(i==0){
+            printf("Brak wizyt o podanym ID!!\n");
+        }
+
+        int n;
+            printf("\n\nCzy chcesz wyszukac kolejne wizyty?\n[1]Tak.\n[2]Nie.");
+            scanf("%d", &n);
+            if(n==1){
+                edycja_wizyt(id2,rok, miesiac, dzien, godzina, minuta);
+            }
+            else if(n==2){
+                return 0;
+            }
+            else while( n == 0 || n > 2){
+                printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+                scanf("%d", &n);
+            }
+return 0;
+}
+
+
+int wyswietl_wizyty_po_id1(){
+
+    if(poczatek2 == NULL){
+            system("cls");
+            printf("Baza danych jest pusta !!\n\n");
+            return 0;
+        }
+
+
+    int odczyt_dni();
+    struct pacjenci *tmp;
+    tmp = poczatek;
+
+    struct lekarze *temp;
+    temp = poczatek1;
+
+    struct wizyty *teemp;
+    teemp = poczatek2;
+
+
+
+                        while(teemp->id != dodaj_wpis2->id){
+                            if(teemp->id == dodaj_wpis2->id){
+                                teemp = teemp;
+                            }
+                            else{
+                                teemp = teemp->nastepny2;
+                            }
+                        }
+
+                        while(tmp->id != dodaj_wpis2->id_pacjenta){
+                            if(tmp->id == dodaj_wpis2->id_pacjenta){
+                                tmp = tmp;
+                            }
+                            else{
+                                tmp = tmp->nastepny;
+                            }
+                        }
+
+                        while(temp->id != dodaj_wpis2->id_lekarza){
+                            if(temp->id == dodaj_wpis2->id_lekarza){
+                                temp = temp;
+                            }
+                            else{
+                                temp = temp->nastepny1;
+                            }
+                        }
+
+                printf("\n*****************************************************************************************************************************");
+                printf("\nNumer ID wizyty: \t\t%d",dodaj_wpis2->id);
+                printf("\nNumer ID pacjenta: \t\t%d",dodaj_wpis2->id_pacjenta);
+                printf("\nImie i nazwisko pacjenta: \t%s %s", tmp->imie,tmp->nazwisko);
+                printf("\nNumer ID lekarza: \t\t%d",dodaj_wpis2->id_lekarza);
+                printf("\nImie i nazwisko lekarza: \t%s %s", temp->imie,temp->nazwisko);
+                printf("\nGodziny pracy lekarza: \t\t%d:00-%d:00", temp->godzina_pocz, temp->godzina_kon);
+                printf("\nData  wizyty: \t\t\t%d.%d.%d",dodaj_wpis2->dzien, dodaj_wpis2->miesiac, dodaj_wpis2->rok);
+                printf("\nDzien wizyty to: \t\t");
+                odczyt_dni(dodaj_wpis2->rok, dodaj_wpis2->miesiac, dodaj_wpis2->dzien);
+                printf("\nGodzina wizyty: \t\t%d:%d",dodaj_wpis2->godzina, dodaj_wpis2->minuta);
+                printf("\nCzas trwania wizyty: \t\t%d",dodaj_wpis2->czas_trwania);
+                printf("\nStatus wizyty: \t\t\t%s\n\n", dodaj_wpis2->status_wizyty);
+                teemp = poczatek2;
+                temp = poczatek1;
+                tmp = poczatek;
+                return 0;
+}
+
+
+
+void pokaz_wizyty_pacjenta(int id){
+
+    system("cls");
+
+    if(poczatek2 == NULL){
+            system("cls");
+            printf("Baza danych jest pusta !!\n\n");
+            return ;
+        }
+
+    char odbyta[] = "Odbyta";
+    char zaplanowana[] = "Zaplanowana";
+    char odwolana[] = "Odwolana";
+    int rok, miesiac, dzien;
+
+    int wyswietl_wizyty_po_id();
+    int id_szukane;
+    int i = 0;
+    printf("Podaj ID pacjenta, ktorego wizyty chcesz wyswietlic: ");
+    scanf("%d", &id_szukane);
+
+    printf("Czy chcesz ograniczyc wyniki wyszukiwania do konkretnego statusu lub dnia?\n[1]Tak - status.\n[2]Tak - dzien.\n[3]Nie.\n");
+    int wybor;
+    scanf("%d", &wybor);
+
+    if(wybor == 1){
+        printf("\nDo jakiego statusu chcesz ograniczyc?\n[1]Wizyta odbyta.\n[2]Wizyta zaplanowana.\n[3]Wizyta odwolana.\n");
+        int status;
+        scanf("%d", &status);
+
+
+            if(status == 1){
+                dodaj_wpis2 = poczatek2;
+
+                while(dodaj_wpis2 != NULL){
+
+                    while(id_szukane >= id || id_szukane == 0){
+
+                        system("cls");
+                        printf("Podane ID jest zle, podaj prawidlowe: ");
+                        scanf("%d",&id_szukane);
+                    }
+
+                        if(dodaj_wpis2->id_pacjenta == id_szukane && (stricmp(dodaj_wpis2->status_wizyty, odbyta)==0)){
+                            i++;
+                            wyswietl_wizyty_po_id(dodaj_wpis2);
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                        else{
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                    }
+                }
+
+
+            if(status == 2){
+                dodaj_wpis2 = poczatek2;
+
+                while(dodaj_wpis2 != NULL){
+
+                    while(id_szukane >= id || id_szukane == 0){
+
+                        system("cls");
+                        printf("Podane ID jest zle, podaj prawidlowe: ");
+                        scanf("%d",&id_szukane);
+                    }
+
+                        if(dodaj_wpis2->id_pacjenta == id_szukane && (stricmp(dodaj_wpis2->status_wizyty, zaplanowana)==0)){
+                            i++;
+                            wyswietl_wizyty_po_id(dodaj_wpis2);
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                        else{
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                    }
+                }
+
+
+
+            if(status == 3){
+                dodaj_wpis2 = poczatek2;
+
+                while(dodaj_wpis2 != NULL){
+
+                    while(id_szukane >= id || id_szukane == 0){
+
+                        system("cls");
+                        printf("Podane ID jest zle, podaj prawidlowe: ");
+                        scanf("%d",&id_szukane);
+                    }
+
+                        if(dodaj_wpis2->id_pacjenta == id_szukane && (stricmp(dodaj_wpis2->status_wizyty, odwolana)==0)){
+                            i++;
+                            wyswietl_wizyty_po_id(dodaj_wpis2);
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                        else{
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                    }
+                }
+    }
+
+
+    if(wybor == 2){
+        printf("\nDo jakiego dnia chcesz ograniczyc?\n");
+        printf("Podaj rok wizyty: ");
+        scanf("%d", &rok);
+        printf("Podaj miesiac wizyty: ");
+        scanf("%d", &miesiac);
+        printf("Podaj dzien wizyty: ");
+        scanf("%d", &dzien);
+
+        dodaj_wpis2 = poczatek2;
+
+        while(dodaj_wpis2!= NULL){
+
+            if(dodaj_wpis2->rok == rok && dodaj_wpis2->miesiac == miesiac && dodaj_wpis2->dzien == dzien){
+
+                i++;
+                wyswietl_wizyty_po_id(dodaj_wpis2);
+                dodaj_wpis2 = dodaj_wpis2->nastepny2;
+            }
+            else{
+                dodaj_wpis2 = dodaj_wpis2->nastepny2;
+            }
+        }
+    }
+
+
+
+
+    if(wybor == 3){
+    dodaj_wpis2 = poczatek2;
+
+    while(dodaj_wpis2 != NULL){
+
+            while(id_szukane >= id || id_szukane == 0){
+
+                        system("cls");
+                        printf("Podane ID jest zle, podaj prawidlowe: ");
+                        scanf("%d",&id_szukane);
+
+                }
+
+        if(dodaj_wpis2->id_pacjenta == id_szukane){
+            i++;
+            wyswietl_wizyty_po_id(dodaj_wpis2);
+            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+        }
+        else{
+            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+        }
+    }
+    }
+
+
+    if(i==0){
+            printf("Brak wizyt pacjenta o podanym ID!!\n");
+        }
+
+
+    int n;
+            printf("\n\nCzy chcesz wyszukac kolejne wizyty?\n[1]Tak.\n[2]Nie.");
+            scanf("%d", &n);
+            if(n==1){
+                pokaz_wizyty_pacjenta(id);
+            }
+            else if(n==2){
+                return ;
+            }
+            else while( n == 0 || n > 2){
+                printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+                scanf("%d", &n);
+            }
+return ;
+}
+
+
+
+void pokaz_wizyty_lekarza(int id1){
+
+
+    system("cls");
+
+    if(poczatek2 == NULL){
+            system("cls");
+            printf("Baza danych jest pusta !!\n\n");
+            return ;
+        }
+
+    char odbyta[] = "Odbyta";
+    char zaplanowana[] = "Zaplanowana";
+    char odwolana[] = "Odwolana";
+
+    int rok, miesiac, dzien;
+    int wyswietl_wizyty_po_id();
+    int id_szukane;
+    int i = 0;
+
+    printf("Podaj ID lekarza, ktorego wizyty chcesz wyswietlic: ");
+    scanf("%d", &id_szukane);
+
+    printf("Czy chcesz ograniczyc wyniki wyszukiwania do konkretnego statusu lub dnia?\n[1]Tak - status.\n[2]Tak - dzien.\n[3]Nie.\n");
+    int wybor;
+    scanf("%d", &wybor);
+
+    if(wybor == 1){
+        printf("\nDo jakiego statusu chcesz ograniczyc?\n[1]Wizyta odbyta.\n[2]Wizyta zaplanowana.\n[3]Wizyta odwolana.\n");
+        int status;
+        scanf("%d", &status);
+
+
+            if(status == 1){
+                dodaj_wpis2 = poczatek2;
+
+                while(dodaj_wpis2 != NULL){
+
+                    while(id_szukane >= id1 || id_szukane == 0){
+
+                        system("cls");
+                        printf("Podane ID jest zle, podaj prawidlowe: ");
+                        scanf("%d",&id_szukane);
+                    }
+
+                        if(dodaj_wpis2->id_lekarza == id_szukane && (stricmp(dodaj_wpis2->status_wizyty, odbyta)==0)){
+                            i++;
+                            wyswietl_wizyty_po_id(dodaj_wpis2);
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                        else{
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                    }
+                }
+
+
+            if(status == 2){
+                dodaj_wpis2 = poczatek2;
+
+                while(dodaj_wpis2 != NULL){
+
+                    while(id_szukane >= id1 || id_szukane == 0){
+
+                        system("cls");
+                        printf("Podane ID jest zle, podaj prawidlowe: ");
+                        scanf("%d",&id_szukane);
+                    }
+
+                        if(dodaj_wpis2->id_lekarza == id_szukane && (stricmp(dodaj_wpis2->status_wizyty, zaplanowana)==0)){
+                            i++;
+                            wyswietl_wizyty_po_id(dodaj_wpis2);
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                        else{
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                    }
+                }
+
+
+
+            if(status == 3){
+                dodaj_wpis2 = poczatek2;
+
+                while(dodaj_wpis2 != NULL){
+
+                    while(id_szukane >= id1 || id_szukane == 0){
+
+                        system("cls");
+                        printf("Podane ID jest zle, podaj prawidlowe: ");
+                        scanf("%d",&id_szukane);
+                    }
+
+                        if(dodaj_wpis2->id_lekarza == id_szukane && (stricmp(dodaj_wpis2->status_wizyty, odwolana)==0)){
+                            i++;
+                            wyswietl_wizyty_po_id(dodaj_wpis2);
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                        else{
+                            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+                        }
+                    }
+                }
+    }
+
+    if(wybor == 2){
+        printf("\nDo jakiego dnia chcesz ograniczyc?\n");
+        printf("Podaj rok wizyty: ");
+        scanf("%d", &rok);
+        printf("Podaj miesiac wizyty: ");
+        scanf("%d", &miesiac);
+        printf("Podaj dzien wizyty: ");
+        scanf("%d", &dzien);
+
+        dodaj_wpis2 = poczatek2;
+
+        while(dodaj_wpis2!= NULL){
+
+            if(dodaj_wpis2->rok == rok && dodaj_wpis2->miesiac == miesiac && dodaj_wpis2->dzien == dzien){
+
+                i++;
+                wyswietl_wizyty_po_id1(dodaj_wpis2);
+                dodaj_wpis2 = dodaj_wpis2->nastepny2;
+            }
+            else{
+                dodaj_wpis2 = dodaj_wpis2->nastepny2;
+            }
+        }
+    }
+
+
+    if(wybor == 3){
+    dodaj_wpis2 = poczatek2;
+
+    while(dodaj_wpis2 != NULL){
+
+            while(id_szukane >= id1 || id_szukane == 0){
+
+                        system("cls");
+                        printf("Podane ID jest zle, podaj prawidlowe: ");
+                        scanf("%d",&id_szukane);
+
+                }
+
+        if(dodaj_wpis2->id_lekarza == id_szukane){
+            i++;
+            wyswietl_wizyty_po_id(dodaj_wpis2);
+            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+        }
+        else{
+            dodaj_wpis2 = dodaj_wpis2->nastepny2;
+        }
+    }
+    }
+
+    if(i==0){
+        printf("Brak wizyt lekarza o podanym ID!!\n");
+    }
+
+        int n;
+            printf("\n\nCzy chcesz wyszukac kolejne wizyty?\n[1]Tak.\n[2]Nie.");
+            scanf("%d", &n);
+            if(n==1){
+                pokaz_wizyty_lekarza(id1);
+            }
+            else if(n==2){
+                return ;
+            }
+            else while( n == 0 || n > 2){
+                printf("Wybierz poprawny numer!\n[1]Tak.\n[2]Nie.");
+                scanf("%d", &n);
+            }
+return ;
+}
+
+int wyswietl_wizyty_po_id(){
+
+    if(poczatek2 == NULL){
+            system("cls");
+            printf("Baza danych jest pusta !!\n\n");
+            return 0;
+        }
+
+    int odczyt_dni();
+
+    struct pacjenci *tmp;
+    tmp = poczatek;
+
+    struct lekarze *temp;
+    temp = poczatek1;
+
+                        while(tmp->id != dodaj_wpis2->id_pacjenta){
+                            if(tmp->id == dodaj_wpis2->id_pacjenta){
+                                tmp = tmp;
+                            }
+                            else{
+                                tmp = tmp->nastepny;
+                            }
+                        }
+
+                        while(temp->id != dodaj_wpis2->id_lekarza){
+                            if(temp->id == dodaj_wpis2->id_lekarza){
+                                temp = temp;
+                            }
+                            else{
+                                temp = temp->nastepny1;
+                            }
+                        }
+
+                printf("\n*****************************************************************************************************************************");
+                printf("\nNumer ID wizyty: \t\t%d",dodaj_wpis2->id);
+                printf("\nNumer ID pacjenta: \t\t%d",dodaj_wpis2->id_pacjenta);
+                printf("\nImie i nazwisko pacjenta: \t%s %s", tmp->imie,tmp->nazwisko);
+                printf("\nNumer ID lekarza: \t\t%d",dodaj_wpis2->id_lekarza);
+                printf("\nImie i nazwisko lekarza: \t%s %s", temp->imie,temp->nazwisko);
+                printf("\nGodziny pracy lekarza: \t\t%d:00-%d:00", temp->godzina_pocz, temp->godzina_kon);
+                printf("\nData  wizyty: \t\t\t%d.%d.%d",dodaj_wpis2->dzien, dodaj_wpis2->miesiac, dodaj_wpis2->rok);
+                printf("\nDzien wizyty to: \t\t");
+                odczyt_dni(dodaj_wpis2->rok, dodaj_wpis2->miesiac, dodaj_wpis2->dzien);
+                printf("\nGodzina wizyty: \t\t%d:%d",dodaj_wpis2->godzina, dodaj_wpis2->minuta);
+                printf("\nCzas trwania wizyty: \t\t%d",dodaj_wpis2->czas_trwania);
+                printf("\nStatus wizyty: \t\t\t%s", dodaj_wpis2->status_wizyty);
+                return 0;
+}
+
+
+void zmiana_statusu(int rok, int miesiac, int dzien, int godzina, int minuta){
+
+    int wyswietl_wizyty_po_id1();
+    char odbyta[] = "Odbyta";
+    char nieodbyta[]="Nie-odbyta";
+    int i = 0;
+    dodaj_wpis2 = poczatek2;
+
+    while(dodaj_wpis2 != NULL){
+
+            if(dodaj_wpis2->rok < rok && (stricmp(dodaj_wpis2->status_wizyty, odbyta)!= 0) && (stricmp(dodaj_wpis2->status_wizyty, nieodbyta)!= 0)){
+                    strcpy(dodaj_wpis2->status_wizyty , "Odbyta");
+                    i++;
+            }
+            else if(dodaj_wpis2->rok == rok && dodaj_wpis2->miesiac < miesiac && (stricmp(dodaj_wpis2->status_wizyty, odbyta)!= 0) && (stricmp(dodaj_wpis2->status_wizyty, nieodbyta)!= 0)){
+                strcpy(dodaj_wpis2->status_wizyty , "Odbyta");
+                i++;
+            }
+            else if(dodaj_wpis2->rok == rok && dodaj_wpis2-> miesiac == miesiac && dodaj_wpis2->dzien < dzien && (stricmp(dodaj_wpis2->status_wizyty, odbyta)!= 0) && (stricmp(dodaj_wpis2->status_wizyty, nieodbyta)!= 0)){
+                strcpy(dodaj_wpis2->status_wizyty , "Odbyta");
+                i++;
+            }
+            else if(dodaj_wpis2->rok == rok && dodaj_wpis2-> miesiac == miesiac && dodaj_wpis2->dzien == dzien && dodaj_wpis2->godzina_zakonczenia_wizyty < godzina && (stricmp(dodaj_wpis2->status_wizyty, odbyta)!= 0) && (stricmp(dodaj_wpis2->status_wizyty, nieodbyta)!= 0)){
+                strcpy(dodaj_wpis2->status_wizyty , "Odbyta");
+                i++;
+            }
+            else if(dodaj_wpis2->rok == rok && dodaj_wpis2-> miesiac == miesiac && dodaj_wpis2->dzien == dzien && dodaj_wpis2->godzina_zakonczenia_wizyty == godzina && dodaj_wpis2->minuta_zakonczenia_wizyty < minuta && (stricmp(dodaj_wpis2->status_wizyty, odbyta)!= 0) && (stricmp(dodaj_wpis2->status_wizyty, nieodbyta)!= 0)){
+                strcpy(dodaj_wpis2->status_wizyty , "Odbyta");
+                i++;
+            }
+        if(i>0){
+        if(stricmp(dodaj_wpis2->status_wizyty, odbyta)==0){
+            wyswietl_wizyty_po_id1();
+            printf("\nStatus danej wizyty wskazuje, ze wizyta minela. Czy wizyta sie odbyla?\n[1]Tak.\n[2]Nie.");
+            int g;
+            scanf("%d", &g);
+            if(g==1){
+                strcpy(dodaj_wpis2->status_wizyty, odbyta);
+            }
+            else if(g==2){
+                strcpy(dodaj_wpis2->status_wizyty, nieodbyta);
+            }
+
+        }
+        }
+
+        dodaj_wpis2 = dodaj_wpis2->nastepny2;
+    }
+}
+
+void swap_pacjenci(struct pacjenci *a, struct pacjenci *b)
+{
+    struct pacjenci *temp = (struct pacjenci *)malloc(sizeof(struct pacjenci));
+
+    temp->id = a->id;
+    strcpy(temp->imie,a->imie);
+    strcpy(temp->nazwisko,a->nazwisko);
+    strcpy(temp->pesel,a->pesel);
+    strcpy(temp->waga,a->waga);
+    strcpy(temp->wzrost,a->wzrost);
+    strcpy(temp->oddzial,a->oddzial);
+
+    a->id = b->id;
+    strcpy(a->imie,b->imie);
+    strcpy(a->nazwisko,b->nazwisko);
+    strcpy(a->pesel,b->pesel);
+    strcpy(a->waga,b->waga);
+    strcpy(a->wzrost,b->wzrost);
+    strcpy(a->oddzial,b->oddzial);
+
+    b->id = temp->id;
+    strcpy(b->imie,temp->imie);
+    strcpy(b->nazwisko,temp->nazwisko);
+    strcpy(b->pesel,temp->pesel);
+    strcpy(b->waga,temp->waga);
+    strcpy(b->wzrost,temp->wzrost);
+    strcpy(b->oddzial,temp->oddzial);
+
+
+}
+
+
+void swap_lekarze(struct lekarze *a, struct lekarze *b)
+{
+    struct lekarze *temp = (struct lekarze *)malloc(sizeof(struct lekarze));
+
+    temp->id = a->id;
+    strcpy(temp->imie,a->imie);
+    strcpy(temp->nazwisko,a->nazwisko);
+    strcpy(temp->pesel,a->pesel);
+
+    a->id = b->id;
+    strcpy(a->imie,b->imie);
+    strcpy(a->nazwisko,b->nazwisko);
+    strcpy(a->pesel,b->pesel);
+
+    b->id = temp->id;
+    strcpy(b->imie,temp->imie);
+    strcpy(b->nazwisko,temp->nazwisko);
+    strcpy(b->pesel,temp->pesel);
+
+}
+
+void sort_od_min_pacj(int(*porownaj)(struct pacjenci* pierwszy, struct pacjenci* drugi))
+{
+    int swapped;
+
+    struct pacjenci *lptr = NULL;
+    struct pacjenci *ptr1;
+    do
+    {
+        swapped = 0;
+        ptr1 = poczatek;
+
+        while (ptr1->nastepny != lptr)
+        {
+            if (porownaj(ptr1, ptr1->nastepny) > 0)
+            {
+                swap_pacjenci(ptr1, ptr1->nastepny);
+                swapped = 1;
+            }
+            ptr1 = ptr1->nastepny;
+        }
+        lptr = ptr1;
+    }
+    while (swapped);
+
+}
+
+
+void sort_od_min_leka(int(*porownaj)(struct lekarze* pierwszy, struct lekarze* drugi))
+{
+    int swapped;
+
+    struct lekarze *lptr = NULL;
+    struct lekarze *ptr1;
+    do
+    {
+        swapped = 0;
+        ptr1 = poczatek1;
+
+        while (ptr1->nastepny1 != lptr)
+        {
+            if (porownaj(ptr1, ptr1->nastepny1) > 0)
+            {
+                swap_lekarze(ptr1, ptr1->nastepny1);
+                swapped = 1;
+            }
+            ptr1 = ptr1->nastepny1;
+        }
+        lptr = ptr1;
+    }
+    while (swapped);
+
+}
+
+
+void sort_od_max_pacj(int(*porownaj)(struct pacjenci* pierwszy, struct pacjenci* drugi))
+{
+    int swapped;
+
+    struct pacjenci *lptr = NULL;
+    struct pacjenci *ptr1;
+    do
+    {
+        swapped = 0;
+        ptr1 = poczatek;
+
+        while (ptr1->nastepny != lptr)
+        {
+            if (porownaj(ptr1, ptr1->nastepny) < 0)
+            {
+                swap_pacjenci(ptr1, ptr1->nastepny);
+                swapped = 1;
+            }
+            ptr1 = ptr1->nastepny;
+        }
+        lptr = ptr1;
+    }
+    while (swapped);
+
+}
+
+
+void sort_od_max_leka(int(*porownaj)(struct lekarze* pierwszy, struct lekarze* drugi))
+{
+    int swapped;
+
+    struct lekarze *lptr = NULL;
+    struct lekarze *ptr1;
+    do
+    {
+        swapped = 0;
+        ptr1 = poczatek1;
+
+        while (ptr1->nastepny1 != lptr)
+        {
+            if (porownaj(ptr1, ptr1->nastepny1) < 0)
+            {
+                swap_lekarze(ptr1, ptr1->nastepny1);
+                swapped = 1;
+            }
+            ptr1 = ptr1->nastepny1;
+        }
+        lptr = ptr1;
+    }
+    while (swapped);
+
+}
+
+int sort_pacjenci_imie(struct pacjenci* a, struct pacjenci* b)
+{
+    return stricmp(a->imie,b->imie);
+}
+
+int sort_pacjenci_nazwisko(struct pacjenci* a, struct pacjenci* b)
+{
+    return stricmp(a->nazwisko,b->nazwisko);
+}
+
+int sort_pacjenci_pesel(struct pacjenci* a, struct pacjenci* b)
+{
+    return stricmp(a->pesel,b->pesel);
+}
+
+int sort_pacjenci_waga(struct pacjenci* a, struct pacjenci* b)
+{
+    return stricmp(a->waga,b->waga);
+}
+
+int sort_pacjenci_wzrost(struct pacjenci* a, struct pacjenci* b)
+{
+    return stricmp(a->wzrost,b->wzrost);
+}
+
+int sort_pacjenci_oddzial(struct pacjenci* a, struct pacjenci* b)
+{
+    return stricmp(a->oddzial,b->oddzial);
+}
+
+int sort_lekarze_imie(struct lekarze* a, struct lekarze* b)
+{
+    return stricmp(a->imie,b->imie);
+}
+
+int sort_lekarze_nazwisko(struct lekarze* a, struct lekarze* b)
+{
+    return stricmp(a->nazwisko,b->nazwisko);
+}
+
+int sort_lekarze_pesel(struct lekarze* a, struct lekarze* b)
+{
+    return stricmp(a->pesel,b->pesel);
+}
+
+
+int menu_sortowania_pacjentow(struct pacjenci *lista){
+
+        int a,b;
+        system("cls");
+
+        if(poczatek == NULL){
+            printf("Baza pacjentow jest pusta!! \n\n");
+            return 0;
+        }
+
+        printf("Jak chcesz posortowac dane? \n[1]Rosnaco. \n[2]Malejaco.\n");
+        scanf("%d", &a);
+
+        if(a==1){
+
+        printf("WYBIERZ POLE PO KTORYM CHCESZ POSORTOWAC PACJENTOW:\n [1]Imie,\n [2]Nazwisko,\n [3]Pesel,\n [4]Waga,\n [5]Wzrost,\n [6]Oddzial.\n\n [7]MENU.\n");
+        scanf("%d", &b);
+
+        switch(b){
+
+            case 1:
+                sort_od_min_pacj(sort_pacjenci_imie);
+                pokaz_pacjentow(lista);
+                break;
+            case 2:
+                sort_od_min_pacj(sort_pacjenci_nazwisko);
+                pokaz_pacjentow(lista);
+                break;
+            case 3:
+                sort_od_min_pacj(sort_pacjenci_pesel);
+                pokaz_pacjentow(lista);
+                break;
+            case 4:
+                sort_od_min_pacj(sort_pacjenci_waga);
+                pokaz_pacjentow(lista);
+                break;
+            case 5:
+                sort_od_min_pacj(sort_pacjenci_wzrost);
+                pokaz_pacjentow(lista);
+                break;
+            case 6:
+                sort_od_min_pacj(sort_pacjenci_oddzial);
+                pokaz_pacjentow(lista);
+                break;
+            case 7:
+                break;
+            default:
+                break;
+        }
+    }
+    else if (a==2){
+        printf("WYBIERZ POLE PO KTORYM CHCESZ POSORTOWAC PACJENTOW:\n [1]Imie,\n [2]Nazwisko,\n [3]Pesel,\n [4]Waga,\n [5]Wzrost,\n [6]Oddzial.\n\n [7]MENU.\n");
+        scanf("%d", &b);
+
+        switch(b){
+
+            case 1:
+                sort_od_max_pacj(sort_pacjenci_imie);
+                pokaz_pacjentow(lista);
+                break;
+            case 2:
+                sort_od_max_pacj(sort_pacjenci_nazwisko);
+                pokaz_pacjentow(lista);
+                break;
+            case 3:
+                sort_od_max_pacj(sort_pacjenci_pesel);
+                pokaz_pacjentow(lista);
+                break;
+            case 4:
+                sort_od_max_pacj(sort_pacjenci_waga);
+                pokaz_pacjentow(lista);
+                break;
+            case 5:
+                sort_od_max_pacj(sort_pacjenci_wzrost);
+                pokaz_pacjentow(lista);
+                break;
+            case 6:
+                sort_od_max_pacj(sort_pacjenci_oddzial);
+                pokaz_pacjentow(lista);
+                break;
+            case 7:
+                break;
+            default:
+                break;
+        }
+    }
+    else{
+        return 0;
+    }
+    return 0;
+}
+
+
+
+void menu_sortowania_lekarzy(struct lekarze *lista1){
+
+        int a,b;
+        system("cls");
+
+        if(poczatek1 == NULL){
+            printf("Baza lekarzy jest pusta!! \n\n");
+            return ;
+        }
+
+        printf("Jak chcesz posortowac dane? \n[1]Rosnaco. \n[2]Malejaco.\n");
+        scanf("%d", &a);
+
+        if(a==1){
+
+        printf("WYBIERZ POLE PO KTORYM CHCESZ POSORTOWAC LEKARZY:\n [1]Imie,\n [2]Nazwisko,\n [3]Pesel,\n\n\n [4]MENU.\n");
+        scanf("%d", &b);
+        switch(b){
+
+            case 1:
+                sort_od_min_leka(sort_lekarze_imie);
+                pokaz_lekarzy(lista1);
+                break;
+            case 2:
+                sort_od_min_leka(sort_lekarze_nazwisko);
+                pokaz_lekarzy(lista1);
+                break;
+            case 3:
+                sort_od_min_leka(sort_lekarze_pesel);
+                pokaz_lekarzy(lista1);
+                break;
+            case 4:
+                break;
+            default:
+                break;
+            }
+        }
+        else if(a==2){
+            printf("WYBIERZ POLE PO KTORYM CHCESZ POSORTOWAC LEKARZY:\n [1]Imie,\n [2]Nazwisko,\n [3]Pesel,\n\n\n [4]MENU.\n");
+        scanf("%d", &b);
+        switch(b){
+
+            case 1:
+                sort_od_max_leka(sort_lekarze_imie);
+                pokaz_lekarzy(lista1);
+                break;
+            case 2:
+                sort_od_max_leka(sort_lekarze_nazwisko);
+                pokaz_lekarzy(lista1);
+                break;
+            case 3:
+                sort_od_max_leka(sort_lekarze_pesel);
+                pokaz_lekarzy(lista1);
+                break;
+            case 4:
+                break;
+            default:
+                break;
+            }
+        }
+}
+
+
+
+
+/*
+****************************************************************                    MAIN                     ************************************************************************
+*/
+int odczyt_dni(int rok, int miesiac, int dzien){
+
+    int liczba_dni_miesiaca[]={31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    char *nazwa_dnia[]={"Niedziela", "Poniedzialek", "Wtorek", "Sroda", "Czwartek", "Piatek", "Sobota"};
+    int i;
+    char dzien_wizyty[SIZE];
+
+
+    if (rok % 4 == 0 && (rok % 100 != 0 || rok % 400 == 0))
+        liczba_dni_miesiaca[1] = 29;
+
+    if (rok < 1900 || miesiac < 1 || miesiac > 12 || dzien < 1 || dzien > liczba_dni_miesiaca[miesiac - 1]) {
+        printf("Podano zla date!.\n");
+        return 0;
+    }
+
+    for (i = 1900; i < rok; i++)
+        if (i % 4 == 0 && (i % 100 != 0 || i % 400 == 0))
+            dzien += 366;
+        else
+            dzien += 365;
+
+    for (i = 0; i < miesiac - 1; i++)
+        dzien += liczba_dni_miesiaca[i];
+
+    printf("%s", nazwa_dnia[dzien% 7]);
+    strcpy(dzien_wizyty, nazwa_dnia[dzien% 7]);
+
+    return 0;
+}
+
+
+
+int main(void)
+{
+
+    struct pacjenci *lista = NULL;
+    struct pacjenci *lista3 = NULL;
+    struct pacjenci *tmp = (struct pacjenci *)malloc(sizeof(struct pacjenci));
+    struct lekarze *lista1 = NULL;
+
+    SYSTEMTIME st;
+    GetLocalTime(&st);
+
+    int dzien = st.wDay;
+    int miesiac = st.wMonth;
+    int rok = st.wYear;
+    int godzina = st.wHour;
+    int minuta = st.wMinute;
+
+
+    if(dzien < 10){
+        printf("0%d.", dzien);
+    }
+    else{
+        printf("%d.", dzien);
+    }
+    if(miesiac < 10){
+        printf("0%d.", miesiac);
+    }
+    else{
+        printf("%d.", miesiac);
+    }
+    printf("%d", rok);
+
+
+    if(godzina < 10){
+        printf("\nGodzina 0%d:", godzina);
+    }
+    else{
+        printf("\nGodzina %d:", godzina);
+    }
+    if(minuta < 10){
+        printf("0%d", minuta);
+    }
+    else{
+        printf("%d\n", minuta);
+    }
+
+
+    printf("\nDzis jest ");
+    odczyt_dni(rok, miesiac, dzien);
+    printf("\n");
+    wczytaj_pacjentow("Baza_Przychodnia_Pacjenci.txt");
+    wczytaj_lekarzy("Baza_Przychodnia_Lekarze.txt");
+    wczytaj_wizyty("Baza_Rejestracja.txt");
+    zmiana_statusu(rok, miesiac, dzien, godzina, minuta);
+    zapisz_do_pliku_wizyty("Baza_Rejestracja.txt");
+
+    int a,b, id, id1, id2;
+
+    if(koniec != NULL){
+            id=koniec->id;
+            id+=1;
+        }
+        else{
+            id=1;
+        }
+
+    if(koniec1 != NULL){
+        id1=koniec1->id;
+        id1+=1;
+    }
+    else{
+        id1=1;
+    }
+
+    if(koniec2 != NULL){
+        id2=koniec2->id;
+        id2+=1;
+    }
+    else{
+        id2=1;
+    }
+
+    while(1){
+
+        printf("==============================================================================================================================\n");
+        printf("\t\t\t\t\t\t      PRZYCHODNIA\n");
+        printf("==============================================================================================================================\n");
+        printf("\n1. FUNKCJE DLA PACJENTOW.\n");
+        printf("2. FUNKCJE DLA LEKARZY.\n");
+        printf("3. FUNKCJE DLA WIZYT.\n\n");
+        printf("0. WYJSCIE\n");
+        scanf("%d",&a);
+
+        if(a==1){
+            system("cls");
+            printf("==============================================================================================================================\n");
+            printf("\t\t\t\t\t\t      PRZYCHODNIA\n");
+            printf("==============================================================================================================================\n");
+            printf("\n1. DODAJ PACJENTA.\n");
+            printf("2. WYSWIETL LISTE PACJENTOW.\n");
+            printf("3. USUN PACJENTA Z LISTY.\n");
+            printf("4. EDYTUJ DANE PACJENTA.\n");
+            printf("5. WYSZUKAJ PACJENTA.\n");
+            printf("6. SORTOWANIE PO WYBRANYM POLU.\n\n");
+            printf("7. MENU GLOWNE.\n");
+            printf("0. WYJSCIE\n");
+            scanf("%d",&b);
+
+            switch(b) {
+
+                case 1:
+                    nowy_pacjent(id);
+                    id++;
+                    zapisz_do_pliku_pacjentow("Baza_Przychodnia_Pacjenci.txt");
+                    system("cls");
+                    break;
+                case 2:
+                    pokaz_pacjentow(tmp);
+                    break;
+                case 3:
+                    usuwanie_pacjentow(lista3);
+                    zapisz_do_pliku_pacjentow("Baza_Przychodnia_Pacjenci.txt");
+                    break;
+                case 4:
+                    system("cls");
+                    edycja_pacjentow();
+                    zapisz_do_pliku_pacjentow("Baza_Przychodnia_Pacjenci.txt");
+                    break;
+                case 5:
+                    system("cls");
+                    menu_wyszukiwania_pacjentow();
+                    break;
+                case 6:
+                    menu_sortowania_pacjentow(lista);
+                    break;
+                case 7:
+                    system("cls");
+                    break;
+                case 0:
+                    system("cls");
+                    printf("==============================================================================================================================\n");
+                    printf("\n\t\t\t\t\t     DZIEKUJEMY ZA SKORZYSTANIE Z PROGRAMU!\n\n");
+                    printf("==============================================================================================================================\n");
+                    exit(0);
+                default:
+                    system("cls");
+                    printf("Wybierz prawidlowy numer!\n\n");
+                    break;
+
+            }
+        }
+        else if(a==2){
+            system("cls");
+            printf("==============================================================================================================================\n");
+            printf("\t\t\t\t\t\t      PRZYCHODNIA\n");
+            printf("==============================================================================================================================\n");
+            printf("1. DODAJ LEKARZA.\n");
+            printf("2. WYSWIETL LISTE LEKARZY.\n");
+            printf("3. USUN LEKARZA Z LISTY.\n");
+            printf("4. EDYTUJ DANE LEKARZA.\n\n");
+            printf("5. WYSZUKAJ LEKARZA.\n");
+            printf("6. SORTOWANIE PO WYBRANYM POLU.\n\n");
+            printf("7. MENU GLOWNE.\n");
+            printf("0. WYJSCIE\n");
+            scanf("%d",&b);
+
+            switch(b) {
+
+                 case 1:
+                    nowy_lekarz(id1);
+                    id1++;
+                    zapisz_do_pliku_lekarzy("Baza_Przychodnia_Lekarze.txt");
+                    system("cls");
+                    break;
+                case 2:
+                    pokaz_lekarzy();
+                    break;
+                case 3:
+                    usuwanie_lekarzy(lista1);
+                    zapisz_do_pliku_lekarzy("Baza_Przychodnia_Lekarze.txt");
+                    break;
+                case 4:
+                    system("cls");
+                    edycja_lekarzy();
+                    zapisz_do_pliku_lekarzy("Baza_Przychodnia_Lekarze.txt");
+                    break;
+                case 5:
+                    system("cls");
+                    menu_wyszukiwania_lekarzy();
+                    break;
+                case 6:
+                    menu_sortowania_lekarzy(lista1);
+                    break;
+                case 7:
+                    system("cls");
+                    break;
+                case 0:
+                   system("cls");
+                    printf("==============================================================================================================================\n");
+                    printf("\n\t\t\t\t\t     DZIEKUJEMY ZA SKORZYSTANIE Z PROGRAMU!\n\n");
+                    printf("==============================================================================================================================\n");
+                    exit(0);
+                default:
+                    system("cls");
+                    printf("Wybierz prawidlowy numer!\n\n");
+                    break;
+            }
+        }
+
+        else if(a==3){
+
+
+            system("cls");
+            printf("==============================================================================================================================\n");
+            printf("\t\t\t\t\t\t      PRZYCHODNIA\n");
+            printf("==============================================================================================================================\n");
+            printf("1. ZAREJESTRUJ PACJENTA NA WIZYTE.\n");
+            printf("2. WYSWIETL WIZYTY DANEGO PACJENTA.\n");
+            printf("3. WYSWIETL WIZYTY DANEGO LEKARZA.\n");
+            printf("4. WYSWIETL WSZYSTKIE WIZYTY.\n");
+            printf("5. EDYTUJ DANE WIZYTY. \n");
+            scanf("%d",&b);
+
+            switch(b) {
+                case 1:
+                    nowa_wizyta(id, id1, id2, rok, miesiac, dzien, godzina, minuta);
+                    id2++;
+                    zapisz_do_pliku_wizyty("Baza_Rejestracja.txt");
+                    break;
+                case 2:
+                    system("cls");
+                    pokaz_wizyty_pacjenta(id);
+                    break;
+                case 3:
+                    system("cls");
+                    pokaz_wizyty_lekarza(id1);
+                    break;
+                case 4:
+                    pokaz_wizyty_ograniczone();
+                    break;
+                case 5:
+                    system("cls");
+                    edycja_wizyt(id2, rok, miesiac, dzien, godzina, minuta);
+                    zapisz_do_pliku_wizyty("Baza_Rejestracja.txt");
+                    break;
+                default:
+                    system("cls");
+                    printf("Wybierz prawidlowy numer!\n\n");
+                    break;
+            }
+        }
+        else if(a==0){
+            system("cls");
+            printf("==============================================================================================================================\n");
+            printf("\n\t\t\t\t\t     DZIEKUJEMY ZA SKORZYSTANIE Z PROGRAMU!\n\n");
+            printf("==============================================================================================================================\n");
+            exit(0);
+        }
+        else while(a>3){
+                    system("cls");
+                    printf("Wybierz prawidlowy numer!\n\n");
+                    main();
+        }
+    }
+}
